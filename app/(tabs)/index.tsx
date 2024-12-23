@@ -1,74 +1,108 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import React, { useState } from "react";
+import { View, ScrollView, Platform } from "react-native";
+import {
+  Text,
+  Button,
+  Card,
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { SafeAreaView } from "react-native-safe-area-context";
+// import { Article } from "@/components/Article";
+import { NewsFeed } from "@/components/NewsFeed";
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
+import { articles } from "~/api/articles";
+import Animated, { LinearTransition } from "react-native-reanimated";
+
+interface HomeScreenProps {
+  onNewJournalEntry: () => void;
+  onReviewMemories: () => void;
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
+const HomeScreen: React.FC<HomeScreenProps> = ({
+  onNewJournalEntry,
+  onReviewMemories,
+}) => {
+  const [dailyStreak, setDailyStreak] = useState(3);
+  // const [totalEntries, setTotalEntries] = useState(15);
+
+  return (
+    <SafeAreaView className="flex-1 bg-white dark:bg-gray-900 m-2">
+      {/* <ScrollView> */}
+      {/* Header */}
+      <View className="mb-6">
+        {/* <Text className="text-3xl font-bold text-gray-800 dark:text-white">
+          Memory Journal
+        </Text> */}
+        <Text className="text-3xl font-bold text-center">
+          {new Date().toLocaleDateString("en-US", { dateStyle: "full" })}
+        </Text>
+      </View>
+      <NewsFeed />
+
+      {/* Quick Stats Card */}
+      <Card className="mb-6 p-4 bg-blue-50 dark:bg-blue-900">
+        <View className="flex-row justify-between">
+          <View className="items-center">
+            <Text className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+              Daily Streak
+            </Text>
+            <Text className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              {dailyStreak} days
+            </Text>
+          </View>
+          <View className="items-center">
+            <Text className="text-lg font-semibold text-gray-700 dark:text-gray-300">
+              Total Entries
+            </Text>
+            <Text className="text-2xl font-bold text-green-600 dark:text-green-400">
+              {0}
+            </Text>
+          </View>
+        </View>
+      </Card>
+
+      {/* Action Buttons */}
+      <View className="space-y-4">
+        <Button
+          variant="default"
+          onPress={onNewJournalEntry}
+          className="py-4 rounded-lg"
+        >
+          <Text className="text-white font-semibold text-lg">
+            New Journal Entry
+          </Text>
+        </Button>
+
+        <Button
+          variant="secondary"
+          onPress={onReviewMemories}
+          className="py-4 rounded-lg border border-gray-300 mt-4"
+        >
+          <Text className="text-gray-800 dark:text-white font-semibold text-lg">
+            Review Memories
+          </Text>
+        </Button>
+      </View>
+
+      {/* Recent Entries Preview (Optional) */}
+      <View className="mt-6">
+        <Text className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
+          Recent Memories
+        </Text>
+        {/* Add recent entries list or placeholder */}new
+        <Card className="p-4">
+          <Text className="text-gray-600 dark:text-gray-400">
+            No recent entries. Start journaling today!
+          </Text>
+        </Card>
+      </View>
+
+      {/* </ScrollView> */}
+    </SafeAreaView>
+  );
+};
+
+export default HomeScreen;

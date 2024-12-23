@@ -1,0 +1,5 @@
+import { Edit2 } from "lucide-react-native";
+import { iconWithClassName } from "./iconWithClassName";
+iconWithClassName(Edit2);
+Edit2.displayName = "Edit2";
+export { Edit2 };
