@@ -1,7 +1,5 @@
 import {
   Card,
-  State,
-  FSRSAlgorithm,
   generatorParameters,
   fsrs,
   createEmptyCard,
@@ -100,8 +98,11 @@ export const reviewEntry = async (entry: JournalEntry, grade: ReviewGrade) => {
           : Rating.Easy;
 
   console.log("Rating:", rating);
+  console.log("Card:", card);
 
   const now = new Date();
+
+  console.log("Reviewing card", card, "with rating", rating, "at", now);
   const scheduling = f.next(card, now, rating);
   return scheduling;
 };
