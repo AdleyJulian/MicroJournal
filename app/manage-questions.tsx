@@ -16,27 +16,41 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ChevronLeft, GripVertical, X, Edit2, Plus, Save } from "~/lib/icons";
 import { Text } from "~/components/ui";
 import { useFocusEffect } from "expo-router";
+import { StyleSheet } from "react-native";
+
+const styles = StyleSheet.create({
+  shadowEffect: {
+    // iOS shadow properties
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    // Android shadow property
+    elevation: 5,
+  },
+});
 
 export type Question = {
-  label: string;
   value: string;
   index: number;
 };
 
 export const defaultQuestions: Question[] = [
   {
-    label: "🌟 What was the best part of your day?",
-    value: "best-part",
+    value: "🌟 What was the best part of your day?",
+
     index: 0,
   },
   {
-    label: "📍 What interesting place did you visit today?",
-    value: "interesting-place",
+    value: "📍 What interesting place did you visit today?",
     index: 1,
   },
-  { label: "💼 What did you work on?", value: "work", index: 2 },
-  { label: "📚 What did you read/watch?", value: "read-watch", index: 3 },
-  { label: "🤝 Did you meet anyone new?", value: "meet-new", index: 4 },
+  { value: "💼 What did you work on?", index: 2 },
+  { value: "📚 What did you read/watch?", index: 3 },
+  { value: "🤝 Did you meet anyone new?", index: 4 },
 ];
 
 const ManageQuestionsScreen = () => {
@@ -83,7 +97,6 @@ const ManageQuestionsScreen = () => {
     try {
       // Convert back to the original format for compatibility
       const convertedQuestions = updatedQuestions.map((q) => ({
-        label: q.label,
         value: q.value,
         index: q.index,
       }));
@@ -99,8 +112,7 @@ const ManageQuestionsScreen = () => {
   const handleAddQuestion = () => {
     if (newQuestion.trim()) {
       const newQuestionItem: Question = {
-        label: `question-${Date.now()}`,
-        value: newQuestion.trim(),
+        value: newQuestion,
         index: questions.length,
       };
       const updatedQuestions = [...questions, newQuestionItem];
@@ -120,7 +132,7 @@ const ManageQuestionsScreen = () => {
           text: "Delete",
           style: "destructive",
           onPress: () => {
-            const updatedQuestions = questions.filter((q) => q.label !== id);
+            const updatedQuestions = questions.filter((q) => q.value !== id);
             setQuestions(updatedQuestions);
             saveQuestions(updatedQuestions);
           },
@@ -130,14 +142,14 @@ const ManageQuestionsScreen = () => {
   };
 
   const handleEditStart = (question: Question) => {
-    setEditingId(question.label);
+    setEditingId(question.value);
     setEditText(question.value);
   };
 
   const handleEditSave = (id: string) => {
     if (editText.trim()) {
       const updatedQuestions = questions.map((q) =>
-        q.label === id ? { ...q, value: editText.trim() } : q
+        q.value === id ? { ...q, value: editText.trim() } : q
       );
       setQuestions(updatedQuestions);
       saveQuestions(updatedQuestions);
@@ -148,7 +160,7 @@ const ManageQuestionsScreen = () => {
 
   const renderItem = useCallback(
     ({ item, drag, isActive }: RenderItemParams<Question>) => {
-      const isEditing = item.label === editingId;
+      const isEditing = item.value === editingId;
 
       return (
         <ScaleDecorator>
@@ -156,9 +168,8 @@ const ManageQuestionsScreen = () => {
             activeOpacity={1}
             onLongPress={drag}
             disabled={isActive}
-            className={`bg-white border border-gray-200 rounded-lg mb-2 ${
-              isActive ? "shadow-md" : ""
-            }`}
+            className={`bg-white border border-gray-200 rounded-lg mb-2`}
+            style={[isActive && styles.shadowEffect]}
           >
             <View className="flex-row items-center p-4 gap-3">
               <TouchableOpacity onLongPress={drag}>
@@ -175,7 +186,7 @@ const ManageQuestionsScreen = () => {
                       autoFocus
                     />
                     <TouchableOpacity
-                      onPress={() => handleEditSave(item.label)}
+                      onPress={() => handleEditSave(item.value)}
                       className="bg-blue-500 rounded-lg px-3 py-2"
                     >
                       <Text className="text-white">Save</Text>
@@ -195,7 +206,7 @@ const ManageQuestionsScreen = () => {
                     <Edit2 size={20} color="#6b7280" />
                   </TouchableOpacity>
                   <TouchableOpacity
-                    onPress={() => handleDeleteQuestion(item.label)}
+                    onPress={() => handleDeleteQuestion(item.value)}
                     className="p-2"
                   >
                     <X size={20} color="#ef4444" />
@@ -211,24 +222,13 @@ const ManageQuestionsScreen = () => {
   );
 
   const handleDragEnd = useCallback(({ data }: { data: Question[] }) => {
-    setQuestions(data);
-    saveQuestions(data);
+    setQuestions(data.map((item) => ({ ...item })));
+    saveQuestions(data.map((item) => ({ ...item })));
   }, []);
 
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       {/* Header */}
-
-      {/* Question List */}
-      <DraggableFlatList
-        data={questions}
-        onDragEnd={handleDragEnd}
-        keyExtractor={(item) => item.label}
-        renderItem={renderItem}
-        contentContainerClassName="p-4"
-      />
-
-      {/* Add New Question */}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         className="border-t border-gray-200 bg-white"
@@ -254,6 +254,17 @@ const ManageQuestionsScreen = () => {
           </View>
         </View>
       </KeyboardAvoidingView>
+
+      {/* Question List */}
+      <DraggableFlatList
+        data={questions}
+        onDragEnd={handleDragEnd}
+        keyExtractor={(item) => item.value}
+        renderItem={renderItem}
+        contentContainerClassName="p-4"
+      />
+
+      {/* Add New Question */}
     </SafeAreaView>
   );
 };

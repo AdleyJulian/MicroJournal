@@ -1,79 +1,66 @@
-import React, { useState, useEffect } from "react";
-import { View, ScrollView, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, ScrollView } from "react-native";
 import { updateEntrywithReview } from "~/db/mutations";
 import { getDueEntries } from "~/db/queries";
-import { ReviewGrade } from "~/db/fsrs";
-import { Button, Card, Text } from "~/components/ui/";
-import { JournalEntry } from "@/db/schema/schema";
+import { Button, Card, CardHeader, Text } from "~/components/ui/";
 import { format } from "date-fns";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useQuery, useMutation } from "@tanstack/react-query";
+import { getPreview } from "~/db/fsrs";
+import { Grade } from "ts-fsrs";
+import {
+  RatingButtons,
+  ProgressBar,
+  Menu,
+  StateCount,
+} from "@/components/review";
 
 const ReviewScreen = () => {
-  const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    loadEntries();
-  }, []);
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["dueEntries"],
+    queryFn: getDueEntries,
+    refetchOnWindowFocus: true,
+  });
 
-  const loadEntries = async () => {
-    try {
-      setIsLoading(true);
-      const dueEntries = await getDueEntries();
-      if (dueEntries) {
-        setEntries(dueEntries);
-      }
-    } catch (error) {
-      console.error("Failed to load entries:", error);
-    } finally {
-      setIsLoading(false);
-    }
+  const entries = data || [];
+  const statesCount = {
+    New: entries.filter((entry) => entry.state === "0").length,
+    Learning: entries.filter((entry) => entry.state === "1").length,
+    Review: entries.filter((entry) => entry.state === "2").length,
+    Relearning: entries.filter((entry) => entry.state === "3").length,
   };
 
-  const handleGrade = async (grade: ReviewGrade) => {
+  const stateOrder: Record<string, number> = {
+    "1": 1, // Learning
+    "3": 2, // Relearning
+    "0": 3, // New
+    "2": 4, // Review
+  };
+
+  const orderedEntries = entries.sort((a, b) => {
+    return (stateOrder[a.state] ?? 5) - (stateOrder[b.state] ?? 5);
+  });
+
+  const { mutateAsync: submitReview } = useMutation({
+    mutationFn: updateEntrywithReview,
+    onSuccess: () => {
+      console.log("Review submitted successfully");
+    },
+  });
+
+  const handleGrade = async (grade: Grade) => {
     try {
       const currentEntry = entries[currentIndex];
-      console.log("currentEntry", currentEntry);
-      console.log("grade", grade);
-      await updateEntrywithReview(currentEntry, grade);
-
-      if (currentIndex < entries.length - 1) {
-        setCurrentIndex(currentIndex + 1);
-        setShowAnswer(false);
-      } else {
-        // Finished all reviews
-        await loadEntries(); // Reload in case there are new due entries
-        setCurrentIndex(0);
-        setShowAnswer(false);
-      }
+      await submitReview({ entry: currentEntry, grade: grade });
+      setShowAnswer(false);
+      refetch();
     } catch (error) {
       console.error("Failed to update entry:", error);
     }
   };
-
-  const ProgressBar = ({
-    current,
-    total,
-  }: {
-    current: number;
-    total: number;
-  }) => (
-    <View className="px-4 py-2">
-      <View className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-        <View
-          className="h-full bg-blue-500 rounded-full"
-          style={{
-            width: `${(current / total) * 100}%`,
-          }}
-        />
-      </View>
-      <Text className="text-center text-gray-600 mt-1">
-        {current} of {total} entries reviewed
-      </Text>
-    </View>
-  );
 
   if (isLoading) {
     return (
@@ -92,28 +79,32 @@ const ReviewScreen = () => {
         <Text className="text-base text-center text-gray-600">
           Come back later when you have memories to review
         </Text>
-        <Button onPress={loadEntries} className="mt-4">
+        <Button onPress={() => refetch()} className="mt-4">
           <Text>Refresh</Text>
         </Button>
       </View>
     );
   }
 
-  const currentEntry = entries[currentIndex];
+  const currentEntry = orderedEntries[currentIndex];
+  const preview = getPreview(currentEntry);
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-gray-900 m-2">
+    <SafeAreaView className="flex-1 m-2">
       <View className="flex-1">
-        {/* Progress bar */}
-        <ProgressBar current={currentIndex} total={entries.length} />
-
+        {/* <ProgressBar current={currentIndex} total={orderedEntries.length} /> */}
+        <StateCount statesCount={statesCount} />
         {/* Entry date and stats */}
-        <View className="px-4 py-2 border-b border-gray-200">
-          <Text className="text-center text-2xl font-medium">
-            {currentEntry?.createdAt
-              ? format(new Date(currentEntry.createdAt), "MMMM d, yyyy")
-              : "Date not available"}
-          </Text>
+        <View className="px-4 py-2 border-b ">
+          <View className="flex-row items-center justify-between">
+            <Text className="text-center flex-grow text-2xl font-medium  ml-12">
+              {currentEntry?.entryDate
+                ? format(new Date(currentEntry.entryDate), "MMMM d, yyyy")
+                : "Date not available"}
+            </Text>
+            <Menu entryId={currentEntry.id.toString()} />
+          </View>
+
           <View className="flex-row justify-around space-x-4 mt-1">
             <Text className="text-sm">Reviews: {currentEntry.reps}</Text>
             <Text className="text-sm">Lapses: {currentEntry.lapses}</Text>
@@ -123,7 +114,11 @@ const ReviewScreen = () => {
         {/* Question/Answer area */}
         <ScrollView className="flex-1 p-4">
           <Card className="p-2 m-2">
-            <Text className="text-xl mb-8">{currentEntry.promptQuestion}</Text>
+            <CardHeader>
+              <Text className="text-xl mb-8">
+                {currentEntry.promptQuestion}
+              </Text>
+            </CardHeader>
 
             {!showAnswer ? (
               <Button onPress={() => setShowAnswer(true)} className="mt-4">
@@ -139,34 +134,7 @@ const ReviewScreen = () => {
 
         {/* Review buttons */}
         {showAnswer && (
-          <View className="p-4">
-            <View className="flex-row space-x-4">
-              <Button
-                onPress={() => handleGrade(ReviewGrade.Again)}
-                className="flex-1 bg-red-500 m-2"
-              >
-                <Text className="text-white">Again</Text>
-              </Button>
-              <Button
-                onPress={() => handleGrade(ReviewGrade.Hard)}
-                className="flex-1 bg-orange-500 m-2"
-              >
-                <Text className="text-white">Hard</Text>
-              </Button>
-              <Button
-                onPress={() => handleGrade(ReviewGrade.Good)}
-                className="flex-1 bg-green-500 m-2"
-              >
-                <Text className="text-white">Good</Text>
-              </Button>
-              <Button
-                onPress={() => handleGrade(ReviewGrade.Easy)}
-                className="flex-1 bg-blue-500 m-2"
-              >
-                <Text className="text-white">Easy</Text>
-              </Button>
-            </View>
-          </View>
+          <RatingButtons handleGrade={handleGrade} preview={preview} />
         )}
       </View>
     </SafeAreaView>

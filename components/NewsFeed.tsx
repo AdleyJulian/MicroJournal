@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Articles, type RSSItem } from "./Articles";
+import { Articles } from "./Articles";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Text, Button } from "@/components/ui";
-import { View, TouchableOpacity, Linking } from "react-native";
-import { Sliders } from "@/lib/icons";
-import { Link } from "expo-router";
+
 import { useFocusEffect } from "@react-navigation/native";
-import { Collapsible } from "./Collapsible";
-import { NewsFeedHeader } from "./NewsFeedHeader";
 
 // NewsFeed component props interface
 type NewsFeedProps = {
-  onAddMemory?: (article: RSSItem) => void;
   onChangeFeedsPress?: () => void; // Optional callback for feed change
 };
 
@@ -34,10 +29,7 @@ const defaultRSSFeeds: RSSFeed[] = [
   },
 ];
 
-export const NewsFeed: React.FC<NewsFeedProps> = ({
-  onAddMemory,
-  onChangeFeedsPress,
-}) => {
+export const NewsFeed: React.FC<NewsFeedProps> = ({ onChangeFeedsPress }) => {
   // Get list of RSS Feeds from async storage
   const [rssFeeds, setRssFeeds] = useState<RSSFeed[]>([]);
   const asyncData = AsyncStorage.getItem("rssFeeds");
@@ -71,18 +63,5 @@ export const NewsFeed: React.FC<NewsFeedProps> = ({
     }, [])
   );
 
-  return (
-    <View className="space-y-4 mb-4 px-4">
-      <NewsFeedHeader title="News Feed">
-        {rssFeeds.map((rssFeed) => (
-          <Articles
-            key={rssFeed.url}
-            rssUrl={rssFeed.url}
-            rssTitle={rssFeed.title}
-            onAddMemory={onAddMemory}
-          />
-        ))}
-      </NewsFeedHeader>
-    </View>
-  );
+  return <Articles rssFeeds={rssFeeds} />;
 };

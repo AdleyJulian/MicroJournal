@@ -11,8 +11,10 @@ import {
   FormProvider,
   Noop,
   useFormContext,
+  ControllerRenderProps,
+  Path,
 } from "react-hook-form";
-import { View } from "react-native";
+import { TouchableOpacity, View, Image } from "react-native";
 import Animated, { FadeInDown, FadeOut } from "react-native-reanimated";
 import {
   BottomSheet,
@@ -27,13 +29,19 @@ import { Button, buttonTextVariants } from "../../components/ui/button";
 import { Checkbox } from "../../components/ui/checkbox";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
+import { ImagePlus } from "lucide-react-native";
+//todo: Fix import
+
 // import { RadioGroup } from '../../components/ui/radio-group';
 import { Select, type Option } from "../../components/ui/select";
 import { Switch } from "~/components/ui/switch";
 import { Textarea } from "~/components/ui/textarea";
-import { Calendar as CalendarIcon, X } from "../../lib/icons";
+import { Calendar as CalendarIcon, X, Trash2 } from "../../lib/icons";
 import { cn } from "../../lib/utils";
 import { Text } from "./text";
+import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
+import { useState } from "react";
 
 const Form = FormProvider;
 
@@ -642,6 +650,223 @@ const FormSwitch = React.forwardRef<
 
 FormSwitch.displayName = "FormSwitch";
 
+// Form Image Selector
+
+interface FormImageSelectorProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends Path<TFieldValues> = Path<TFieldValues>,
+> extends Omit<ControllerRenderProps<TFieldValues, TName>, "ref"> {
+  label?: string;
+  description?: string;
+  disabled?: boolean;
+}
+
+const FormImageSelector = React.forwardRef<
+  typeof TouchableOpacity,
+  FormImageSelectorProps
+>(
+  (
+    {
+      label,
+      description,
+      value = "",
+      onChange,
+      disabled,
+      name,
+      onBlur,
+      ...props
+    },
+    ref
+  ) => {
+    const {
+      error,
+      formItemNativeID,
+      formDescriptionNativeID,
+      formMessageNativeID,
+    } = useFormField();
+    const [urlInput, setUrlInput] = useState("");
+    const [urlError, setUrlError] = useState("");
+    const [showUrlInput, setShowUrlInput] = useState(false);
+
+    const isValidUrl = (urlString: string) => {
+      try {
+        new URL(urlString);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    };
+
+    const handleUrlSubmit = () => {
+      if (!urlInput) {
+        setUrlError("Please enter a URL");
+        return;
+      }
+      if (!isValidUrl(urlInput)) {
+        setUrlError("Please enter a valid URL");
+        return;
+      }
+
+      // onChange(urlInput);
+      // onChange({ path: urlInput, source: "url" });
+      onChange({ mediaPath: urlInput, mediaSourceType: "file" });
+      onBlur();
+      setUrlInput("");
+      setShowUrlInput(false);
+      setUrlError("");
+    };
+
+    const pickImage = async () => {
+      try {
+        const { status } =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== "granted") {
+          alert("Permission to access gallery is required!");
+          return;
+        }
+
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ["images"],
+          allowsEditing: false,
+          quality: 0.8,
+        });
+
+        if (!result.canceled) {
+          const selectedImageUri = result.assets[0].uri;
+          const fileName = selectedImageUri.split("/").pop();
+          const newUri = (FileSystem?.documentDirectory ?? "") + fileName;
+
+          await FileSystem.copyAsync({
+            from: selectedImageUri,
+            to: newUri,
+          });
+
+          // onChange(newUri);
+          onChange({ mediaPath: newUri, mediaSourceType: "file" });
+          console.log("Image URI:", newUri);
+          console.log("Value: ", value);
+          onBlur();
+        }
+      } catch (error) {
+        console.error("Error picking image:", error);
+        alert("Failed to select image. Please try again.");
+      }
+    };
+
+    const removeImage = () => {
+      onChange({});
+      onBlur();
+    };
+
+    return (
+      <FormItem>
+        {!!label && <FormLabel nativeID={formItemNativeID}>{label}</FormLabel>}
+
+        <View className="space-y-2">
+          <View className="flex-row ">
+            <TouchableOpacity
+              onPress={pickImage}
+              disabled={disabled}
+              className={`
+                relative overflow-hidden rounded-lg border-2 border-dashed
+                border-gray-200 w-32
+                ${disabled ? "opacity-50" : "active:opacity-70"}
+              `}
+              style={{ aspectRatio: 1 }}
+              aria-labelledby={formItemNativeID}
+              aria-describedby={
+                !error
+                  ? formDescriptionNativeID
+                  : `${formDescriptionNativeID} ${formMessageNativeID}`
+              }
+              aria-invalid={!!error}
+            >
+              {value ? (
+                <>
+                  <Image
+                    source={{ uri: value.mediaPath }}
+                    className="h-full w-full object-cover"
+                  />
+                  <View className="absolute right-1 top-1">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onPress={removeImage}
+                      disabled={disabled}
+                      className="h-6 w-6"
+                    >
+                      <Trash2
+                        className={buttonTextVariants({
+                          variant: "outline",
+                        })}
+                        size={16}
+                      />
+                    </Button>
+                  </View>
+                </>
+              ) : (
+                <View className="flex-1 items-center justify-center p-2">
+                  <ImagePlus className="h-6 w-6 text-muted-foreground" />
+                  <Text className="mt-1 text-xs text-center text-muted-foreground">
+                    Select image
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+
+            {!value && (
+              <TouchableOpacity
+                onPress={() => setShowUrlInput(!showUrlInput)}
+                className="justify-center px-3"
+              >
+                <Text className="text-sm text-primary">or add URL</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {showUrlInput && (
+            <View className="space-y-2 m-2">
+              <Input
+                value={urlInput}
+                onChangeText={setUrlInput}
+                placeholder="Enter image URL"
+                placeholderTextColor={"#9CA3AF"} // Bug in NativeWind, using inline style for now
+                className="border border-gray-200 rounded-md px-3 py-2"
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+              {urlError ? (
+                <Text className="text-xs text-destructive">{urlError}</Text>
+              ) : null}
+              <View className="flex-row space-x-2">
+                <Button
+                  className="m-2"
+                  variant="outline"
+                  onPress={() => {
+                    setShowUrlInput(false);
+                    setUrlInput("");
+                    setUrlError("");
+                  }}
+                >
+                  <Text>Cancel </Text>
+                </Button>
+                <Button onPress={handleUrlSubmit} className="m-2">
+                  <Text>Add URL </Text>
+                </Button>
+              </View>
+            </View>
+          )}
+
+          {!!description && <FormDescription>{description}</FormDescription>}
+          <FormMessage />
+        </View>
+      </FormItem>
+    );
+  }
+);
+
+FormImageSelector.displayName = "FormImageSelector";
+
 export {
   Form,
   FormCheckbox,
@@ -658,4 +883,5 @@ export {
   FormSwitch,
   FormTextarea,
   useFormField,
+  FormImageSelector,
 };

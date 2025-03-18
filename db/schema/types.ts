@@ -7,19 +7,6 @@ export const ReviewState: Record<State, string> = {
   [State.Relearning]: "relearning",
 };
 
-// export type ArticleData = {
-//   title: string;
-//   description: string;
-//   content: string;
-//   url: string;
-//   image: string;
-//   publishedAt: string;
-//   source: {
-//     name: string;
-//     url: string;
-//   };
-// };
-
 export const AricleDataSchema = z
   .object({
     title: z.string(),
@@ -39,8 +26,22 @@ export const JournalEntryContentSchema = z.object({
   tags: z.array(z.string()),
   article: AricleDataSchema,
   promptQuestion: z.string(),
+  mediaPath: z.string().optional(), // Could be a URL or file path - optional as image is optional
+  mediaSourceType: z.enum(["url", "file"]).optional(), //  optional as image is optional, if mediaPath is present, sourceType should be too.  You might want to enforce this more strictly in your application logic.
   answer: z.string(),
+  entryDate: z.number(), // Unix timestamp
+});
+
+export const JournalEntryUpdateSchema = JournalEntryContentSchema.extend({
+  id: z.string(),
+});
+
+export const ImportSchema = z.object({
+  promptQuestion: z.string(),
+  answer: z.string(),
+  entryDate: z.string().date(), // Unix timestamp
 });
 
 export type JournalEntryContent = z.infer<typeof JournalEntryContentSchema>;
+export type JournalEntryUpdate = z.infer<typeof JournalEntryUpdateSchema>;
 export type ArticleData = z.infer<typeof AricleDataSchema>;

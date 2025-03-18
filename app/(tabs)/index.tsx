@@ -1,108 +1,190 @@
 import React, { useState } from "react";
-import { View, ScrollView, Platform } from "react-native";
+import { View, ScrollView, Pressable } from "react-native";
+
 import {
   Text,
   Button,
   Card,
-  Collapsible,
-  CollapsibleTrigger,
-  CollapsibleContent,
-} from "@/components/ui/";
-
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui";
+import { Link } from "expo-router";
+import { Brain, Calendar, Settings } from "@/lib/icons";
 import { SafeAreaView } from "react-native-safe-area-context";
-// import { Article } from "@/components/Article";
-import { NewsFeed } from "@/components/NewsFeed";
+import * as queries from "@/db/queries";
+import { useQuery } from "@tanstack/react-query";
+import { formatDistance } from "date-fns/formatDistance";
+import { X } from "lucide-react-native";
 
-import { articles } from "~/api/articles";
-import Animated, { LinearTransition } from "react-native-reanimated";
-
-interface HomeScreenProps {
-  onNewJournalEntry: () => void;
-  onReviewMemories: () => void;
-}
-
-const HomeScreen: React.FC<HomeScreenProps> = ({
-  onNewJournalEntry,
-  onReviewMemories,
-}) => {
-  const [dailyStreak, setDailyStreak] = useState(3);
-  // const [totalEntries, setTotalEntries] = useState(15);
-
-  return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-gray-900 m-2">
-      {/* <ScrollView> */}
-      {/* Header */}
-      <View className="mb-6">
-        {/* <Text className="text-3xl font-bold text-gray-800 dark:text-white">
-          Memory Journal
-        </Text> */}
-        <Text className="text-3xl font-bold text-center">
-          {new Date().toLocaleDateString("en-US", { dateStyle: "full" })}
-        </Text>
-      </View>
-      <NewsFeed />
-
-      {/* Quick Stats Card */}
-      <Card className="mb-6 p-4 bg-blue-50 dark:bg-blue-900">
-        <View className="flex-row justify-between">
-          <View className="items-center">
-            <Text className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-              Daily Streak
-            </Text>
-            <Text className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-              {dailyStreak} days
-            </Text>
-          </View>
-          <View className="items-center">
-            <Text className="text-lg font-semibold text-gray-700 dark:text-gray-300">
-              Total Entries
-            </Text>
-            <Text className="text-2xl font-bold text-green-600 dark:text-green-400">
-              {0}
-            </Text>
-          </View>
-        </View>
-      </Card>
-
-      {/* Action Buttons */}
-      <View className="space-y-4">
-        <Button
-          variant="default"
-          onPress={onNewJournalEntry}
-          className="py-4 rounded-lg"
-        >
-          <Text className="text-white font-semibold text-lg">
-            New Journal Entry
-          </Text>
-        </Button>
-
-        <Button
-          variant="secondary"
-          onPress={onReviewMemories}
-          className="py-4 rounded-lg border border-gray-300 mt-4"
-        >
-          <Text className="text-gray-800 dark:text-white font-semibold text-lg">
-            Review Memories
-          </Text>
-        </Button>
-      </View>
-
-      {/* Recent Entries Preview (Optional) */}
-      <View className="mt-6">
-        <Text className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
-          Recent Memories
-        </Text>
-        {/* Add recent entries list or placeholder */}new
-        <Card className="p-4">
-          <Text className="text-gray-600 dark:text-gray-400">
-            No recent entries. Start journaling today!
-          </Text>
-        </Card>
-      </View>
-
-      {/* </ScrollView> */}
-    </SafeAreaView>
-  );
+// TODO: Replace with actual types and data fetching
+type Memory = {
+  id: string;
+  title: string;
+  createdAt: string;
 };
 
-export default HomeScreen;
+export default function HomeScreen() {
+  const { data: reviewsDue } = useQuery({
+    queryKey: ["getDueEntries"],
+    queryFn: queries.getDueEntries,
+  });
+
+  const { data: memories } = useQuery({
+    queryKey: ["getAllEntries"],
+    queryFn: queries.getAllEntries,
+  });
+
+  const todaysMemories = memories?.filter((memory) => {
+    const entryDate = new Date(memory.journal_cards.entryDate);
+    const today = new Date();
+    return (
+      entryDate.getDate() === today.getDate() &&
+      entryDate.getMonth() === today.getMonth() &&
+      entryDate.getFullYear() === today.getFullYear()
+    );
+  });
+
+  const entryDates = [
+    ...new Set(
+      memories?.map((memory) => new Date(memory.journal_cards.entryDate)) || []
+    ),
+  ];
+
+  function calculateStreak(dates: Date[]): number {
+    if (dates.length === 0) return 0;
+
+    // Convert all inputs to Date objects and sort in descending order
+    //Technically it should already be sorted.
+    const sortedDates = dates
+      .map((d) => new Date(d))
+      .sort((a, b) => b.getTime() - a.getTime());
+
+    // Remove duplicates by converting to date strings (YYYY-MM-DD format)
+    const uniqueDates = [
+      ...new Set(sortedDates.map((date) => date.toISOString().split("T")[0])),
+    ].map((dateStr) => new Date(dateStr));
+
+    let streak = 1;
+    const msInDay = 24 * 60 * 60 * 1000;
+
+    // Start from the most recent date
+    for (let i = 0; i < uniqueDates.length - 1; i++) {
+      const currentDate = uniqueDates[i];
+      const nextDate = uniqueDates[i + 1];
+
+      // Calculate the difference in days
+      const diffDays = (currentDate.getTime() - nextDate.getTime()) / msInDay;
+
+      // If the difference is 1 day, continue the streak
+      if (Math.round(diffDays) === 1) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+
+    return streak;
+  }
+
+  // TODO: Replace with actual data
+  const mockStats = {
+    streak: calculateStreak(entryDates),
+    reviewsDue: reviewsDue?.length || 0,
+    totalMemories: memories?.length || 0,
+    memoriesToday: todaysMemories?.length || 0,
+  };
+
+  const recentMemories: Memory[] =
+    memories?.slice(0, Math.min(memories?.length, 5)).map((memory) => ({
+      id: memory.journal_cards.id.toString(),
+      title: memory.journal_cards.answer || "",
+      createdAt: formatDistance(memory.journal_cards.entryDate, new Date(), {
+        addSuffix: true,
+      }),
+    })) || [];
+
+  return (
+    <SafeAreaView className="flex-1 bg-background">
+      <View className="flex-row justify-between items-center p-4 border-b border-border">
+        <Text className="text-2xl font-bold ">Memory Journal</Text>
+        <View className="flex-row">
+          <Link asChild href={"/settings"}>
+            <Button variant={"ghost"}>
+              <Settings className="w-6 h-6 text-foreground" />
+            </Button>
+          </Link>
+        </View>
+      </View>
+
+      <ScrollView className="flex-1 p-4">
+        {/* Streak and Stats */}
+        <View className="flex-row justify-between items-center mb-6 p-4 bg-card rounded-lg border border-border">
+          <View className="flex-row items-center">
+            <Calendar className="w-6 h-6 text-primary mr-2" />
+            <Text className="text-lg font-semibold ">
+              {mockStats.streak} Day Streak
+            </Text>
+          </View>
+          <Brain className="w-6 h-6 text-primary" />
+        </View>
+
+        {/* Review Queue Card */}
+        <Card className="mb-4">
+          <CardHeader>
+            <CardTitle>
+              <Text>Review Queue</Text>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <View className="flex-row justify-between items-center">
+              <Text className="">{mockStats.reviewsDue} memories due</Text>
+              <Link asChild href={{ pathname: "/review" }}>
+                <Button>
+                  <Text>Start Review</Text>
+                </Button>
+              </Link>
+            </View>
+          </CardContent>
+        </Card>
+
+        {/* Recent Memories */}
+        <Card className="mb-4">
+          <CardHeader>
+            <CardTitle>
+              <Text>Recent Memories</Text>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {recentMemories.map((memory) => (
+              <Pressable
+                key={memory.id}
+                className="flex-row justify-between items-center py-2 border-b border-border last:border-b-0"
+                onPress={() => {
+                  // TODO: Navigate to memory detail
+                }}
+              >
+                <View>
+                  <Text className=" font-medium">{memory.title}</Text>
+                  <Text className="text-sm text-muted-foreground">
+                    {memory.createdAt}
+                  </Text>
+                </View>
+              </Pressable>
+            ))}
+          </CardContent>
+          <CardFooter>
+            <Text className="text-sm text-muted-foreground">
+              Total: {mockStats.totalMemories} memories • Today:
+              {mockStats.memoriesToday}
+            </Text>
+          </CardFooter>
+          <CardContent>
+            <View className="flex-1"></View>
+          </CardContent>
+        </Card>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}

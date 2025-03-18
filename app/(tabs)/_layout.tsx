@@ -79,9 +79,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="explore/index"
         options={{
-          title: "Calendar",
+          title: "Explore",
           tabBarIcon: ({ color }) => (
             <IconSymbol size={28} name="calendar.circle.fill" color={color} />
           ),
@@ -89,11 +89,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="settings"
+        name="news"
         options={{
-          title: "Settings",
+          title: "News",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="gearshape.fill" color={color} />
+            <IconSymbol size={28} name="newspaper.circle.fill" color={color} />
           ),
           headerShown: false,
         }}

@@ -1,0 +1,1 @@
+ALTER TABLE `media_attachments` ADD `media_source_type` text NOT NULL;

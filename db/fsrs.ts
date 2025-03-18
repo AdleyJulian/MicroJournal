@@ -4,6 +4,8 @@ import {
   fsrs,
   createEmptyCard,
   Rating,
+  State,
+  Grade,
 } from "ts-fsrs";
 import { type JournalEntry } from "@/db/schema/schema";
 import { JournalEntryContent } from "./schema/types";
@@ -14,7 +16,17 @@ const params = generatorParameters({
   maximum_interval: 365,
 });
 const f = fsrs(params);
-const card: Card = createEmptyCard();
+
+const stateMap: { [key: string]: State } = {
+  new: State.New,
+  learning: State.Learning,
+  review: State.Review,
+  relearning: State.Relearning,
+  "1": State.New,
+  "2": State.Learning,
+  "3": State.Review,
+  "4": State.Relearning,
+};
 
 export const newCard = (data: JournalEntryContent) => {
   const card = createEmptyCard();
@@ -27,9 +39,10 @@ export const newCard = (data: JournalEntryContent) => {
     scheduledDays: 0,
     reps: card.reps,
     lapses: card.lapses,
-    state: "new",
+    state: "0",
     promptQuestion: data.promptQuestion,
     answer: data.answer,
+    entryDate: new Date(data.entryDate), // Convert to timestamp
     articleJson: data.article,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -73,8 +86,9 @@ interface ReviewResult {
     retrievability?: number;
   };
 }
-export const reviewEntry = async (entry: JournalEntry, grade: ReviewGrade) => {
-  console.log("Reviewing entry", entry, "with grade", grade);
+
+export const getPreview = (entry: JournalEntry) => {
+  const state = stateMap[entry.state] as State;
 
   const card: Card = {
     due: entry.due,
@@ -84,25 +98,13 @@ export const reviewEntry = async (entry: JournalEntry, grade: ReviewGrade) => {
     scheduled_days: entry.scheduledDays,
     reps: entry.reps,
     lapses: entry.lapses,
-    state: entry.state as any,
+    state: state as State,
   };
 
-  // Convert grade to numerical rating for FSRS
-  const rating =
-    grade === "Again"
-      ? Rating.Again
-      : grade === "Hard"
-        ? Rating.Hard
-        : grade === "Good"
-          ? Rating.Good
-          : Rating.Easy;
+  return f.repeat(card, new Date());
+};
 
-  console.log("Rating:", rating);
-  console.log("Card:", card);
-
-  const now = new Date();
-
-  console.log("Reviewing card", card, "with rating", rating, "at", now);
-  const scheduling = f.next(card, now, rating);
-  return scheduling;
+export const reviewEntry = async (entry: JournalEntry, grade: Grade) => {
+  const scheduling = getPreview(entry);
+  return scheduling[grade];
 };

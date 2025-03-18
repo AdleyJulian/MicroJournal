@@ -17,6 +17,7 @@ export const MAPPING = {
   "arrow.clockwise": "restore",
   "calendar.circle.fill": "calendar-today",
   "gearshape.fill": "settings",
+  "newspaper.circle.fill": "newspaper",
 } as Partial<
   Record<
     import("expo-symbols").SymbolViewProps["name"],

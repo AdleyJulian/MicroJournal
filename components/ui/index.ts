@@ -15,3 +15,4 @@ export { CardContent } from "./card";
 export { CardHeader } from "./card";
 export { CardTitle } from "./card";
 export { CardFooter } from "./card";
+export { Separator } from "./separator";

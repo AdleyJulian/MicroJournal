@@ -1,14 +1,16 @@
-import React, { useState } from "react";
-import { View, TouchableOpacity, ScrollView } from "react-native";
+import React from "react";
+import { View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
+import { Link } from "expo-router";
 import {
   Form,
   FormField,
   FormItem,
   FormTextarea,
   FormDatePicker,
+  FormImageSelector,
 } from "../ui/form";
 import { Card } from "@/components/ui/card";
 import { z } from "zod";
@@ -20,6 +22,8 @@ import { FormQuestionSelector } from "@/components/QuestionSelector";
 import { ArticleData } from "@/db/schema/types";
 import { type JournalEntryContent } from "@/db/schema/types";
 import { newEntry } from "@/db/mutations";
+import { router } from "expo-router";
+
 import Toast from "react-native-toast-message";
 
 const questions = [
@@ -32,7 +36,7 @@ const questions = [
   { label: "What did you read/watch?", value: "read-watch" },
   { label: "Did you meet anyone new?", value: "meet-new" },
 ];
-type ArticleObject = { ArticleData: ArticleData };
+type ArticleObject = { articleData: ArticleData };
 
 const showToast = () => {
   Toast.show({
@@ -50,45 +54,66 @@ const showToast = () => {
 };
 
 export const NewCardForm: React.FC<ArticleObject> = (props) => {
+  const { articleData } = props;
   const formSchema = z.object({
-    promptQuestion: z.object({ label: z.string(), value: z.string() }),
-    // selectQuestion: z.object({ label: z.string(), value: z.string() }),
+    promptQuestion: z.object({
+      index: z.number(),
+      value: z.string().min(1, "This field is required").max(500, "Too long"),
+    }),
     answer: z.string().min(1, "This field is required").max(500, "Too long"),
-    image: z.string().optional(),
     date: z.string().optional(),
+    media: z
+      .object({
+        mediaPath: z.string().optional(),
+        mediaSourceType: z.enum(["url", "file"]).optional(),
+      })
+      .optional(),
   });
   type FormValues = z.infer<typeof formSchema>;
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      promptQuestion: { label: "", value: "" },
+      promptQuestion: { index: 0, value: "" },
       answer: "",
+      media: undefined,
     },
+    values: {
+      promptQuestion: articleData
+        ? { value: "📰 What what the news headline for the day?", index: -1 }
+        : { index: 0, value: "" },
+
+      answer: articleData?.title || "",
+      media: { mediaPath: articleData?.image, mediaSourceType: "url" },
+    },
+    context: { articleData },
   });
 
   const handleSubmit = async () => {
-    console.log("Form submitted", form.getValues());
     // Validate inputs
     try {
       // Prepare the card data
       const cardData: JournalEntryContent = {
         tags: [],
         article: null,
-        promptQuestion: form.getValues("promptQuestion").label,
+        promptQuestion: form.getValues("promptQuestion").value,
         answer: form.getValues("answer"),
+        mediaPath: form.getValues("media")?.mediaPath,
+        mediaSourceType: form.getValues("media")?.mediaSourceType,
+        entryDate: new Date(form.getValues("date") || Date.now()).getTime(),
       };
 
       // Insert the card into the database
+
+      console.log("Card data to be inserted:", cardData);
       await newEntry(cardData);
 
       // Show a success toast
       showToast();
 
       // Reset form and clear errors
+      //Need to fix this, since the reset no longer resets the query params
+      router.setParams({ articleData: null });
       form.reset();
-
-      // Optional: Add navigation or success feedback
-      // navigation.goBack() or show a success toast
     } catch (error) {
       console.error("Failed to create card", error);
       // Optional: Show an error toast
@@ -105,11 +130,9 @@ export const NewCardForm: React.FC<ArticleObject> = (props) => {
   return (
     <Form {...form}>
       <View>
-        <Text className="my-2 text-4xl font-bold">Create a new memory!</Text>
-        {/* Date of the new card */}
-        {/* <View className="m-2">
-          <Text> December 14, 2024</Text>
-        </View> */}
+        <Text className="my-2 text-4xl text-primary font-extrabold tracking-tight">
+          Create a new memory!
+        </Text>
       </View>
 
       <Card className="p-2 justify-normal">
@@ -144,14 +167,29 @@ export const NewCardForm: React.FC<ArticleObject> = (props) => {
               <FormTextarea
                 label="What do you want to remember?"
                 placeholder="Enter your memory"
-                // description="This is the answer that will be displayed on the card."
                 {...field}
+                placeholderTextColor="#9CA3AF" // Bug in NativeWind, using inline style for now
                 numberOfLines={5}
                 autoCorrect={true}
               />
             )}
           />
         </FormItem>
+        <FormField
+          control={form.control}
+          name="media"
+          // No required rule
+          render={({ field }) => (
+            <FormImageSelector
+              label="Image"
+              description="Select a related image (optional)"
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+              name={field.name}
+            />
+          )}
+        />
       </Card>
       <Button
         onPress={form.handleSubmit(handleSubmit)}
@@ -160,9 +198,11 @@ export const NewCardForm: React.FC<ArticleObject> = (props) => {
       >
         <Text>Save your memory</Text>
       </Button>
-      <Button onPress={() => form.reset()} className="mt-2">
-        <Text>Clear</Text>
-      </Button>
+      <Link asChild href={{ pathname: "/(tabs)/create" }}>
+        <Button className="mt-2" onPress={() => form.reset()}>
+          <Text>Clear</Text>
+        </Button>
+      </Link>
     </Form>
   );
 };

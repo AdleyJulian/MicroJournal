@@ -39,6 +39,7 @@ export const journalEntries = sqliteTable("journal_cards", {
   promptQuestion: text("prompt_question"),
   answer: text("answer"),
   articleJson: text("jsonData").$type<ArticleData>(),
+  entryDate: integer("entry_date", { mode: "timestamp" }).notNull(),
 
   // Metadata
   createdAt: integer("created_at", { mode: "timestamp" }).default(
@@ -78,13 +79,20 @@ export const mediaAttachments = sqliteTable("media_attachments", {
   entryId: integer("entry_id").references(() => journalEntries.id, {
     onDelete: "cascade",
   }),
-  filePath: text("file_path").notNull(),
-  type: text("type"), // 'image', 'video', 'audio', etc.
+  mediaPath: text("file_path").notNull(), // Renamed from filePath to mediaPath - will store URL or file path
+  mediaSourceType: text("media_source_type", {
+    // NEW field to define if it's 'url' or 'file'
+    enum: ["url", "file"] as [string, ...string[]], // Using enum for type safety
+  }).notNull(),
+  type: text("type"), // 'image', 'video', 'audio', etc. - Keeping it for future use
   caption: text("caption"),
   createdAt: integer("created_at", { mode: "timestamp" }).default(
     sql`(strftime('%s', 'now'))`
   ),
 });
+
+const MediaSourceType = z.enum(["url", "file"]);
+type MediaSourceType = z.infer<typeof MediaSourceType>;
 
 export const journalSchema = createSelectSchema(journalEntries);
 export type JournalEntry = z.infer<typeof journalSchema>;
@@ -93,4 +101,6 @@ export type Tag = z.infer<typeof tagSchema>;
 export const entryTagSchema = createSelectSchema(entryTags);
 export type EntryTag = z.infer<typeof entryTagSchema>;
 export const mediaAttachmentSchema = createSelectSchema(mediaAttachments);
+//.extend({  mediaSourceType: MediaSourceType});
+// May want to add this in the future.
 export type MediaAttachment = z.infer<typeof mediaAttachmentSchema>;

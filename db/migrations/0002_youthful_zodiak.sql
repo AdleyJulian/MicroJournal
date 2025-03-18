@@ -1,0 +1,1 @@
+ALTER TABLE `journal_cards` ADD `entry_date` integer NOT NULL;

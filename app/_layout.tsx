@@ -2,62 +2,36 @@ import "~/global.css";
 
 import "expo-dev-client";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Theme, ThemeProvider } from "@react-navigation/native";
+// import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  Theme,
+  ThemeProvider,
+  DefaultTheme,
+  DarkTheme,
+} from "@react-navigation/native";
 import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import { Platform } from "react-native";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { DatabaseProvider } from "~/db/provider";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
+import { RSSFeedConfigProvider } from "@/contexts/RSSFeedConfigContext"; // Import your config provider
+import { RSSFeedProvider } from "@/contexts/RSSFeedContext"; // Import your feed provider
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { PortalHost } from "@rn-primitives/portal";
+
+const queryClient = new QueryClient();
 
 const LIGHT_THEME: Theme = {
-  dark: false,
+  ...DefaultTheme,
   colors: NAV_THEME.light,
-  fonts: {
-    regular: {
-      fontFamily: "",
-      fontWeight: "normal",
-    },
-    medium: {
-      fontFamily: "",
-      fontWeight: "bold",
-    },
-    bold: {
-      fontFamily: "",
-      fontWeight: "bold",
-    },
-    heavy: {
-      fontFamily: "",
-      fontWeight: "bold",
-    },
-  },
 };
 const DARK_THEME: Theme = {
-  dark: true,
+  ...DarkTheme,
   colors: NAV_THEME.dark,
-  fonts: {
-    regular: {
-      fontFamily: "",
-      fontWeight: "normal",
-    },
-    medium: {
-      fontFamily: "",
-      fontWeight: "bold",
-    },
-    bold: {
-      fontFamily: "",
-      fontWeight: "bold",
-    },
-    heavy: {
-      fontFamily: "",
-      fontWeight: "bold",
-    },
-  },
 };
 
 export {
@@ -66,64 +40,79 @@ export {
 } from "expo-router";
 
 // Prevent the splash screen from auto-hiding before getting the color scheme.
-SplashScreen.preventAutoHideAsync();
+// SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const { colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
+  const hasMounted = React.useRef(false);
+  const { colorScheme, isDarkColorScheme } = useColorScheme();
   const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
 
   React.useEffect(() => {
-    (async () => {
-      const theme = await AsyncStorage.getItem("theme");
-      if (Platform.OS === "web") {
-        // Adds the background color to the html element to prevent white background on overscroll.
-        document.documentElement.classList.add("bg-background");
-      }
-      if (!theme) {
-        AsyncStorage.setItem("theme", colorScheme);
-        setIsColorSchemeLoaded(true);
-        return;
-      }
-      const colorTheme = theme === "dark" ? "dark" : "light";
-      if (colorTheme !== colorScheme) {
-        setColorScheme(colorTheme);
+    if (hasMounted.current) {
+      return;
+    }
 
-        setIsColorSchemeLoaded(true);
-        return;
-      }
-      setIsColorSchemeLoaded(true);
-    })().finally(() => {
-      SplashScreen.hideAsync();
-    });
+    setIsColorSchemeLoaded(true);
+    hasMounted.current = true;
+    console.log("Color scheme loaded");
   }, []);
 
   if (!isColorSchemeLoaded) {
     return null;
   }
-
   return (
-    <DatabaseProvider>
-      <GestureHandlerRootView>
-        <BottomSheetModalProvider>
-          <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-            <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen name="+not-found" />
-              <Stack.Screen
+    <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+      <DatabaseProvider>
+        <QueryClientProvider client={queryClient}>
+          <GestureHandlerRootView>
+            <BottomSheetModalProvider>
+              <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+              <RSSFeedConfigProvider>
+                <RSSFeedProvider
+                  initialRssFeeds={[]}
+                  initialOptions={{
+                    limit: 100,
+                    refreshInterval: 5 * 60 * 1000, // 5 minutes
+                    cacheTimeout: 30, // 30 minutes
+                  }}
+                >
+                  <Stack>
+                    <Stack.Screen
+                      name="(tabs)"
+                      options={{ headerShown: false }}
+                    />
+                    <Stack.Screen name="+not-found" />
+                    {/* <Stack.Screen
                 name="manage-feeds"
                 options={{ title: "Manage Feeds" }}
-              />
-              <Stack.Screen
-                name="manage-questions"
-                options={{ title: "Manage Questions" }}
-              />
-            </Stack>
-            <Toast />
-          </ThemeProvider>
-        </BottomSheetModalProvider>
-      </GestureHandlerRootView>
-    </DatabaseProvider>
+              /> */}
+                    <Stack.Screen
+                      name="manage-questions"
+                      options={{ title: "Manage Questions" }}
+                    />
+                    <Stack.Screen
+                      name="entries/index"
+                      options={{ title: "Entry", headerShown: false }}
+                    />
+                    <Stack.Screen
+                      name="settings"
+                      options={{ title: "Settings", headerShown: true }}
+                    />
+                  </Stack>
+                  <PortalHost />
+                </RSSFeedProvider>
+              </RSSFeedConfigProvider>
+
+              <Toast />
+            </BottomSheetModalProvider>
+          </GestureHandlerRootView>
+        </QueryClientProvider>
+      </DatabaseProvider>
+    </ThemeProvider>
   );
 }
+
+// const useIsomorphicLayoutEffect =
+//   Platform.OS === "web" && typeof window === "undefined"
+//     ? React.useEffect
+//     : React.useLayoutEffect;
