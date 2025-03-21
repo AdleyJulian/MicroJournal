@@ -39,3 +39,8 @@ app-example
 
 # Ensure consistent line endings (VERY IMPORTANT)
 * text=auto eol=lf
+
+#Using probuild
+
+android/
+ios/

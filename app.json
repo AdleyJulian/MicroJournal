@@ -4,7 +4,7 @@
     "slug": "MicroJournal",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/icons/adaptive-icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,7 +13,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/icons/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.anonymous.MicroJournal"
@@ -28,7 +28,11 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/icons/splash-icon-light.png",
+          "dark": {
+            "image": "./assets/images/icons/splash-icon-dark.png",
+            "backgroundColor": "#000000"
+          },
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"

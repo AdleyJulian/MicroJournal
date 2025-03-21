@@ -15,6 +15,7 @@ export function ThemeToggle() {
     setColorScheme(theme);
     setAndroidNavigationBar(theme);
     AsyncStorage.setItem("theme", theme);
+    console.log("Theme set to", theme);
   };
 
   if (!isDarkColorScheme) {

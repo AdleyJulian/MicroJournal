@@ -89,7 +89,7 @@ export default function HomeScreen() {
   }
 
   // TODO: Replace with actual data
-  const mockStats = {
+  const reviewStats = {
     streak: calculateStreak(entryDates),
     reviewsDue: reviewsDue?.length || 0,
     totalMemories: memories?.length || 0,
@@ -124,7 +124,7 @@ export default function HomeScreen() {
           <View className="flex-row items-center">
             <Calendar className="w-6 h-6 text-primary mr-2" />
             <Text className="text-lg font-semibold ">
-              {mockStats.streak} Day Streak
+              {reviewStats.streak} Day Streak
             </Text>
           </View>
           <Brain className="w-6 h-6 text-primary" />
@@ -139,7 +139,7 @@ export default function HomeScreen() {
           </CardHeader>
           <CardContent>
             <View className="flex-row justify-between items-center">
-              <Text className="">{mockStats.reviewsDue} memories due</Text>
+              <Text className="">{reviewStats.reviewsDue} memories due</Text>
               <Link asChild href={{ pathname: "/review" }}>
                 <Button>
                   <Text>Start Review</Text>
@@ -176,8 +176,8 @@ export default function HomeScreen() {
           </CardContent>
           <CardFooter>
             <Text className="text-sm text-muted-foreground">
-              Total: {mockStats.totalMemories} memories • Today:
-              {mockStats.memoriesToday}
+              Total: {reviewStats.totalMemories} memories • Today:{" "}
+              {reviewStats.memoriesToday}
             </Text>
           </CardFooter>
           <CardContent>
