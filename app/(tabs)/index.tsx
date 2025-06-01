@@ -1,5 +1,7 @@
 import { View, ScrollView, Pressable } from "react-native";
+import React, { useEffect } from "react"; // Import useEffect
 import { useRefreshOnFocus } from "@/hooks/useRefreshOnFocus";
+import { createDailyDayOfWeekEntry } from "@/db/mutations"; // Import the new function
 
 import {
   Text,
@@ -24,6 +26,10 @@ type Memory = {
 };
 
 export default function HomeScreen() {
+  useEffect(() => {
+    createDailyDayOfWeekEntry();
+  }, []); // Empty dependency array ensures this runs once on mount
+
   const { data: reviewsDue, refetch: refetchReviewsDue } = useQuery({
     queryKey: ["getDueEntries"],
     queryFn: queries.getDueEntries,

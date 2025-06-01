@@ -34,6 +34,7 @@ export const journalEntries = sqliteTable("journal_cards", {
   state: text("state", {
     enum: Object.values(State) as [string, ...string[]], // Use the enum values directly
   }).notNull(),
+  cardType: text("card_type", { enum: ["default", "user"] }).default("user"),
 
   // Journal Entry Fields
   promptQuestion: text("prompt_question"),

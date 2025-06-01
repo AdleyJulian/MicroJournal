@@ -4,7 +4,7 @@ import {
   type JournalEntry,
   mediaAttachments,
 } from "@/db/schema/schema"; // Import mediaAttachments
-import { desc, eq, and } from "drizzle-orm";
+import { desc, eq, and, sql } from "drizzle-orm";
 import {
   JournalEntryContent,
   ArticleData,
@@ -13,14 +13,16 @@ import {
 import { newCard, type ReviewGrade, reviewEntry } from "./fsrs";
 import * as FileSystem from "expo-file-system";
 import { Grade, RatingType, State } from "ts-fsrs";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export async function newEntry(entry: JournalEntryContent) {
+export async function newEntry(entry: JournalEntryContent, cardType?: string) {
   const card = newCard(entry);
 
   console.log("Recieved Entry", entry);
 
   // Prepare journal entry data (without image for now, as per schema update)
   const newJournalEntry = {
+    cardType: cardType || "user",
     due: card.due,
     stability: card.stability,
     difficulty: card.difficulty,
@@ -251,3 +253,52 @@ export const insertEntries = async (entries: JournalEntryContent[]) => {
     console.error("Error inserting entries:", error);
   }
 };
+
+export async function createDailyDayOfWeekEntry() {
+  try {
+    const defaultCardsSetting = await AsyncStorage.getItem("defaultCardsSetting");
+    // If the setting is not explicitly false, proceed to create the card.
+    // This covers cases where it's true or not set yet (defaulting to true behavior).
+    if (defaultCardsSetting !== "false") {
+      const currentDate = new Date();
+      const formattedDate = currentDate.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      const dayOfWeek = currentDate.toLocaleDateString("en-US", { weekday: "long" });
+      const promptQuestion = `📅 What day of the week was ${formattedDate}?`;
+
+      // Check if an entry with the same prompt question already exists for today
+      const existingEntry = await db
+        .select()
+        .from(journalEntries)
+        .where(
+          and(
+            eq(journalEntries.promptQuestion, promptQuestion),
+            eq(journalEntries.cardType, "default"),
+            // Compare dates by ignoring the time component
+            sql`date(entry_date / 1000, 'unixepoch') = date(${currentDate.getTime()} / 1000, 'unixepoch')`
+          )
+        )
+        .get();
+
+      if (!existingEntry) {
+        const entryContent: JournalEntryContent = {
+          promptQuestion: promptQuestion,
+          answer: dayOfWeek,
+          entryDate: currentDate.toISOString(), // Ensure entryDate is a string
+          // FSRS fields will be set by newCard within newEntry
+        };
+        await newEntry(entryContent, "default");
+        console.log("Daily day of the week entry created.");
+      } else {
+        console.log("Daily day of the week entry already exists for today.");
+      }
+    } else {
+      console.log("Default card creation is disabled by user setting.");
+    }
+  } catch (error) {
+    console.error("Error creating daily day of the week entry:", error);
+  }
+}

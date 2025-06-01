@@ -35,13 +35,19 @@ export const getAllEntries = async () => {
     .select()
     .from(journalEntries)
     .leftJoin(mediaAttachments, eq(journalEntries.id, mediaAttachments.entryId))
+    .where(eq(journalEntries.cardType, "user"))
     .orderBy(desc(journalEntries.entryDate));
   // return await db.select().from(journalEntries);
 };
 
 export const getAllEntriesGroupedByDate = async () => {
   // First get all entries with their attachments
-  const entries = await getAllEntries();
+  const entries = await db
+    .select()
+    .from(journalEntries)
+    .leftJoin(mediaAttachments, eq(journalEntries.id, mediaAttachments.entryId))
+    .where(eq(journalEntries.cardType, "user"))
+    .orderBy(desc(journalEntries.entryDate));
   const groupedEntries: { [key: string]: any[] } = {}; // Group entries by date string
 
   entries.forEach((entry) => {
