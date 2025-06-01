@@ -15,6 +15,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
+    "@expo/metro-config": "~0.20.0",
     "@expo/vector-icons": "^14.1.0",
     "@gorhom/bottom-sheet": "^5.0.6",
     "@hookform/resolvers": "^3.9.1",
@@ -47,6 +48,7 @@
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.38.1",
     "drizzle-zod": "^0.6.0",
+    "eas-cli": "^16.7.0",
     "expo": "~53.0.9",
     "expo-blur": "~14.1.4",
     "expo-constants": "~17.1.6",
@@ -98,8 +100,7 @@
     "tailwindcss": "^3.4.16",
     "tailwindcss-animate": "^1.0.7",
     "ts-fsrs": "^4.5.0",
-    "xml2js": "^0.6.2",
-    "@expo/metro-config": "~0.20.0"
+    "xml2js": "^0.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
