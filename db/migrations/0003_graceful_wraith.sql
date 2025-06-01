@@ -1,0 +1,1 @@
+ALTER TABLE `journal_cards` ADD `card_type` text DEFAULT 'user';
