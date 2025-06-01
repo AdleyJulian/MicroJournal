@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { View } from "react-native";
 import {
   AgendaList,
@@ -24,6 +24,13 @@ type ComponentProps = {
 export const CalendarWithAgenda = (props: ComponentProps) => {
   const { isDarkColorScheme } = useColorScheme();
   const { agendaItems, refetch } = props;
+
+  const initialDate = useMemo(() => {
+    if (agendaItems && agendaItems.length > 0) {
+      return agendaItems[agendaItems.length - 1].title;
+    }
+    return new Date().toISOString().split("T")[0]; // Default to today
+  }, [agendaItems]); // Recalculate only if agendaItems changes
 
   type MarkedDates = {
     [date: string]: {
@@ -78,7 +85,7 @@ export const CalendarWithAgenda = (props: ComponentProps) => {
   );
   return (
     <CalendarProvider
-      date={agendaItems[agendaItems.length - 1].title}
+      date={initialDate}
       showTodayButton
       todayButtonStyle={getTheme(isDarkColorScheme)}
     >
