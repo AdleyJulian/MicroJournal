@@ -14,6 +14,7 @@ import {
   Menu,
   StateCount,
 } from "@/components/review";
+import { useRefreshOnFocus } from "@/hooks/useRefreshOnFocus";
 
 const ReviewScreen = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -24,6 +25,7 @@ const ReviewScreen = () => {
     queryFn: getDueEntries,
     refetchOnWindowFocus: true,
   });
+  useRefreshOnFocus(refetch);
 
   const entries = data || [];
   const statesCount = {

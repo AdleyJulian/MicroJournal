@@ -1,14 +1,9 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useCallback,
-  useRef,
-  useEffect,
-} from "react";
+// contexts/RSSFeedContext.tsx
+import React, { createContext, useContext, useCallback, useMemo } from "react";
 import * as xml2js from "xml2js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRSSFeedConfig } from "./RSSFeedConfigContext";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export interface RSSItem {
   id: string;
@@ -33,16 +28,6 @@ interface FeedCount {
   [feedTitle: string]: number;
 }
 
-interface RSSFeedState {
-  articles: RSSItem[];
-  isLoading: boolean;
-  error: Error | null;
-  hasMore: boolean;
-  page: number;
-  totalCount: number;
-  feedCounts: FeedCount; // Added feed counts
-}
-
 interface UseRSSFeedOptions {
   limit?: number;
   refreshInterval?: number;
@@ -50,15 +35,23 @@ interface UseRSSFeedOptions {
   cacheTimeout?: number; // In minutes
 }
 
-interface RSSContextValue extends RSSFeedState {
+interface RSSContextValue {
+  articles: RSSItem[];
+  isLoading: boolean;
+  error: Error | null;
+  hasMore: boolean;
+  page: number;
+  totalCount: number;
+  feedCounts: FeedCount;
   refresh: () => Promise<void>;
-  loadMore: () => Promise<void>;
+  loadMore: () => void;
   options: UseRSSFeedOptions;
   getAllArticles: () => RSSItem[];
-  getArticleCountByFeed: (feedTitle: string) => number; // Added feed count getter
+  getArticleCountByFeed: (feedTitle: string) => number;
 }
 
 const CACHE_KEY = "RSS_FEED_CACHE";
+const RSS_ARTICLES_QUERY_KEY = "rssArticles";
 const PAGE_SIZE = 20;
 
 const RSSFeedContext = createContext<RSSContextValue | null>(null);
@@ -83,26 +76,17 @@ export const RSSFeedProvider: React.FC<{
   children: React.ReactNode;
   initialRssFeeds: RSSFeed[];
   initialOptions: UseRSSFeedOptions;
-}> = ({ children, initialRssFeeds, initialOptions }) => {
+}> = ({ children, initialOptions }) => {
   const { feedSources } = useRSSFeedConfig();
-  const [options] = useState<UseRSSFeedOptions>({
+  const queryClient = useQueryClient();
+  
+  // Memoize options to prevent unnecessary re-renders
+  const options = useMemo(() => ({
     ...initialOptions,
     cacheTimeout: initialOptions.cacheTimeout || 30, // Default 30 minutes
-  });
+  }), [initialOptions]);
 
-  const [state, setState] = useState<RSSFeedState>({
-    articles: [],
-    isLoading: false,
-    error: null,
-    hasMore: true,
-    page: 0,
-    totalCount: 0,
-    feedCounts: {},
-  });
-
-  const allArticlesRef = useRef<RSSItem[]>([]);
-  const lastFetchRef = useRef<number>(0);
-
+  // Helper functions
   const calculateFeedCounts = useCallback((articles: RSSItem[]): FeedCount => {
     return articles.reduce((counts, article) => {
       if (article.source?.name) {
@@ -113,203 +97,161 @@ export const RSSFeedProvider: React.FC<{
     }, {} as FeedCount);
   }, []);
 
-  const parseRSSFeed = useCallback(
-    (xmlString: string, feed: RSSFeed): RSSItem[] => {
-      const parsedArticles: RSSItem[] = [];
-      const parser = new xml2js.Parser({
-        trim: true,
-        explicitArray: false,
-        mergeAttrs: true,
-      });
+  const parseRSSFeed = useCallback((xmlString: string, feed: RSSFeed): RSSItem[] => {
+    const parsedArticles: RSSItem[] = [];
+    const parser = new xml2js.Parser({
+      trim: true,
+      explicitArray: false,
+      mergeAttrs: true,
+    });
 
-      parser.parseString(xmlString, (err: any, result: any) => {
-        if (err) throw new Error("XML Parsing error: " + err.message);
+    parser.parseString(xmlString, (err: any, result: any) => {
+      if (err) throw new Error("XML Parsing error: " + err.message);
+      if (!result?.rss?.channel) return parsedArticles;
 
-        const items = Array.isArray(result.rss.channel.item)
-          ? result.rss.channel.item
-          : [result.rss.channel.item];
+      const items = Array.isArray(result.rss.channel.item)
+        ? result.rss.channel.item
+        : [result.rss.channel.item];
 
-        items.forEach((item: any) => {
-          const image = item["media:content"]?.url || item.enclosure?.url || "";
-          parsedArticles.push({
-            id: `${item.link}${Date.now()}`,
-            title: stripHtmlTags(item.title),
-            description: truncateDescription(stripHtmlTags(item.description)),
-            published: item.pubDate,
-            link: item.link,
-            image,
-            source: {
-              name: result.rss.channel.title || feed.title,
-              url: result.rss.channel.link || feed.url,
-            },
-          });
+      if (!items || !items.length) return parsedArticles;
+
+      items.forEach((item: any) => {
+        if (!item) return;
+        const image = item["media:content"]?.url || item.enclosure?.url || "";
+        parsedArticles.push({
+          id: `${item.link || ""}${Date.now()}${Math.random()}`,
+          title: stripHtmlTags(item.title || ""),
+          description: truncateDescription(stripHtmlTags(item.description || "")),
+          published: item.pubDate || new Date().toISOString(),
+          link: item.link || "",
+          image,
+          source: {
+            name: result.rss.channel.title || feed.title,
+            url: result.rss.channel.link || feed.url,
+          },
         });
       });
+    });
 
-      return parsedArticles;
-    },
-    []
-  );
-  const loadCache = useCallback(async () => {
+    return parsedArticles;
+  }, []);
+
+  // Fetch RSS data function
+  const fetchRSSData = useCallback(async (): Promise<RSSItem[]> => {
+    if (!feedSources?.length) {
+      return [];
+    }
+
     try {
+      // Try to get cached data first
       const cached = await AsyncStorage.getItem(CACHE_KEY);
       if (cached) {
         const { articles, timestamp } = JSON.parse(cached);
         const age = (Date.now() - timestamp) / (1000 * 60);
 
         if (age < options.cacheTimeout!) {
-          allArticlesRef.current = articles;
-          const feedCounts = calculateFeedCounts(articles);
-          setState((prev) => ({
-            ...prev,
-            articles: articles.slice(0, PAGE_SIZE),
-            hasMore: articles.length > PAGE_SIZE,
-            totalCount: articles.length,
-            feedCounts,
-          }));
-          return true;
+          return articles;
         }
       }
-      return false;
-    } catch (error) {
-      console.warn("Cache loading failed:", error);
-      return false;
-    }
-  }, [options.cacheTimeout, calculateFeedCounts]);
 
-  const saveCache = useCallback(async (articles: RSSItem[]) => {
-    try {
+      // If no valid cache, fetch fresh data
+      const allArticles: RSSItem[] = [];
+      for (const feed of feedSources) {
+        const response = await fetch(feed.url);
+        if (!response.ok) {
+          console.warn(`HTTP error! status: ${response.status} for URL: ${feed.url}`);
+          continue; // Skip this feed but continue with others
+        }
+        const responseText = await response.text();
+        const processedArticles = parseRSSFeed(responseText, feed);
+        allArticles.push(...processedArticles);
+      }
+
+      // Sort by date
+      allArticles.sort(
+        (a, b) => new Date(b.published).getTime() - new Date(a.published).getTime()
+      );
+
+      // Cache the results
       await AsyncStorage.setItem(
         CACHE_KEY,
         JSON.stringify({
-          articles,
+          articles: allArticles,
           timestamp: Date.now(),
         })
       );
+
+      return allArticles;
     } catch (error) {
-      console.warn("Cache saving failed:", error);
+      console.error("Error fetching RSS feeds:", error);
+      throw error instanceof Error ? error : new Error("An error occurred fetching RSS feeds");
     }
-  }, []);
+  }, [feedSources, parseRSSFeed, options.cacheTimeout]);
 
-  const fetchRSSFeeds = useCallback(
-    async (forceRefresh = false) => {
-      if (!feedSources?.length) {
-        setState((prev) => ({
-          ...prev,
-          articles: [],
-          isLoading: false,
-          error: null,
-          totalCount: 0,
-          feedCounts: {},
-        }));
-        return;
-      }
+  // Use TanStack Query to manage RSS data
+  const {
+    data: allArticles = [],
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: [RSS_ARTICLES_QUERY_KEY, feedSources.map(f => f.id).join(',')],
+    queryFn: fetchRSSData,
+    staleTime: options.refreshInterval || 5 * 60 * 1000, // Default 5 minutes
+    refetchInterval: options.refreshInterval,
+    refetchOnWindowFocus: false,
+  });
 
-      // Check cache first unless force refresh
-      if (!forceRefresh && (await loadCache())) {
-        return;
-      }
+  // Pagination state (kept outside of React Query)
+  const [page, setPage] = React.useState(0);
+  
+  // Computed values
+  const visibleArticles = useMemo(() => {
+    return allArticles.slice(0, (page + 1) * PAGE_SIZE);
+  }, [allArticles, page]);
+  
+  const hasMore = useMemo(() => {
+    return visibleArticles.length < allArticles.length;
+  }, [visibleArticles.length, allArticles.length]);
+  
+  const feedCounts = useMemo(() => {
+    return calculateFeedCounts(allArticles);
+  }, [calculateFeedCounts, allArticles]);
 
-      setState((prev) => ({ ...prev, isLoading: true, error: null }));
-      lastFetchRef.current = Date.now();
+  // Load more articles action
+  const loadMore = useCallback(() => {
+    if (isLoading || !hasMore) return;
+    setPage(prevPage => prevPage + 1);
+  }, [isLoading, hasMore]);
 
-      try {
-        const allArticles: RSSItem[] = [];
-        for (const feed of feedSources) {
-          const response = await fetch(feed.url);
-          if (!response.ok) {
-            throw new Error(
-              `HTTP error! status: ${response.status} for URL: ${feed.url}`
-            );
-          }
-          const responseText = await response.text();
-          const processedArticles = parseRSSFeed(responseText, feed);
-          allArticles.push(...processedArticles);
-        }
+  // Force refresh action
+  const refresh = useCallback(async () => {
+    setPage(0);
+    await refetch();
+  }, [refetch]);
 
-        // Sort by date
-        allArticles.sort(
-          (a, b) =>
-            new Date(b.published).getTime() - new Date(a.published).getTime()
-        );
-
-        allArticlesRef.current = allArticles;
-        const feedCounts = calculateFeedCounts(allArticles);
-        await saveCache(allArticles);
-
-        setState({
-          articles: allArticles.slice(0, PAGE_SIZE),
-          isLoading: false,
-          error: null,
-          hasMore: allArticles.length > PAGE_SIZE,
-          page: 0,
-          totalCount: allArticles.length,
-          feedCounts,
-        });
-      } catch (error) {
-        setState((prev) => ({
-          ...prev,
-          isLoading: false,
-          error:
-            error instanceof Error ? error : new Error("An error occurred"),
-          totalCount: 0,
-          feedCounts: {},
-        }));
-      }
-    },
-    [feedSources, parseRSSFeed, loadCache, saveCache, calculateFeedCounts]
-  );
-
-  const loadMore = useCallback(async () => {
-    if (state.isLoading || !state.hasMore) return;
-
-    const nextPage = state.page + 1;
-    const start = nextPage * PAGE_SIZE;
-    const end = start + PAGE_SIZE;
-    const nextArticles = allArticlesRef.current.slice(0, end);
-
-    setState((prev) => ({
-      ...prev,
-      articles: nextArticles,
-      page: nextPage,
-      hasMore: end < allArticlesRef.current.length,
-    }));
-  }, [state.isLoading, state.hasMore, state.page]);
-
-  // Initial fetch
-  useEffect(() => {
-    fetchRSSFeeds();
-  }, [fetchRSSFeeds]);
-
-  // Auto-refresh if enabled
-  useEffect(() => {
-    if (!options.refreshInterval) return;
-
-    const interval = setInterval(() => {
-      const timeSinceLastFetch = Date.now() - lastFetchRef.current;
-
-      if (timeSinceLastFetch >= options.refreshInterval!) {
-        fetchRSSFeeds(true);
-      }
-    }, options.refreshInterval);
-
-    return () => clearInterval(interval);
-  }, [options.refreshInterval, fetchRSSFeeds]);
-
+  // Helper methods
   const getArticleCountByFeed = useCallback(
     (feedTitle: string): number => {
-      return state.feedCounts[feedTitle.toLowerCase()] || 0;
+      return feedCounts[feedTitle.toLowerCase()] || 0;
     },
-    [state.feedCounts]
+    [feedCounts]
   );
 
   const getAllArticles = useCallback(() => {
-    return allArticlesRef.current;
-  }, []);
+    return allArticles;
+  }, [allArticles]);
 
+  // Context value
   const value: RSSContextValue = {
-    ...state,
-    refresh: () => fetchRSSFeeds(true),
+    articles: visibleArticles,
+    isLoading,
+    error: error as Error | null,
+    hasMore,
+    page,
+    totalCount: allArticles.length,
+    feedCounts,
+    refresh,
     loadMore,
     options,
     getAllArticles,

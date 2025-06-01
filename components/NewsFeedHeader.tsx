@@ -2,7 +2,6 @@ import { PropsWithChildren, useState } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
 import { Sliders } from "@/lib/icons";
 import { Link } from "expo-router";
-import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { Colors } from "@/constants/Colors";
@@ -36,7 +35,7 @@ export function NewsFeedHeader({
           </TouchableOpacity>
         </ThemedView>
 
-        <Link href={{ pathname: "/manage-feeds" }}>
+        <Link href={{ pathname: "/news/manage-feeds" }}>
           <Sliders
             size={24}
             className="text-gray-600 dark:text-gray-300"

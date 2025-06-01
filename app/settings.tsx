@@ -9,11 +9,10 @@ import {
   CardHeader,
   Text,
   ThemeToggle,
-  Button,
   Separator,
   CardFooter,
 } from "@/components/ui";
-import JSON5 from "json5";
+
 
 const Settings: React.FC = () => {
   return (

@@ -98,6 +98,10 @@ export default function RootLayout() {
                       name="settings"
                       options={{ title: "Settings", headerShown: true }}
                     />
+                    <Stack.Screen
+                      name="edit"
+                      options={{ title: "Edit", headerShown: true }}
+                    />
                   </Stack>
                   <PortalHost />
                 </RSSFeedProvider>

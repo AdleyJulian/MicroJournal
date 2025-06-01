@@ -1,5 +1,5 @@
-import React, { useState } from "react";
 import { View, ScrollView, Pressable } from "react-native";
+import { useRefreshOnFocus } from "@/hooks/useRefreshOnFocus";
 
 import {
   Text,
@@ -16,9 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import * as queries from "@/db/queries";
 import { useQuery } from "@tanstack/react-query";
 import { formatDistance } from "date-fns/formatDistance";
-import { X } from "lucide-react-native";
 
-// TODO: Replace with actual types and data fetching
 type Memory = {
   id: string;
   title: string;
@@ -26,15 +24,18 @@ type Memory = {
 };
 
 export default function HomeScreen() {
-  const { data: reviewsDue } = useQuery({
+  const { data: reviewsDue, refetch: refetchReviewsDue } = useQuery({
     queryKey: ["getDueEntries"],
     queryFn: queries.getDueEntries,
   });
 
-  const { data: memories } = useQuery({
+  const { data: memories, refetch: refetchAllEntries } = useQuery({
     queryKey: ["getAllEntries"],
     queryFn: queries.getAllEntries,
   });
+
+  useRefreshOnFocus(refetchReviewsDue);
+  useRefreshOnFocus(refetchAllEntries);
 
   const todaysMemories = memories?.filter((memory) => {
     const entryDate = new Date(memory.journal_cards.entryDate);
@@ -88,7 +89,6 @@ export default function HomeScreen() {
     return streak;
   }
 
-  // TODO: Replace with actual data
   const reviewStats = {
     streak: calculateStreak(entryDates),
     reviewsDue: reviewsDue?.length || 0,
@@ -158,20 +158,26 @@ export default function HomeScreen() {
           </CardHeader>
           <CardContent>
             {recentMemories.map((memory) => (
-              <Pressable
+              <Link
+                asChild
+                href={{ pathname: "/entries", params: { id: memory.id } }}
                 key={memory.id}
-                className="flex-row justify-between items-center py-2 border-b border-border last:border-b-0"
-                onPress={() => {
-                  // TODO: Navigate to memory detail
-                }}
               >
-                <View>
-                  <Text className=" font-medium">{memory.title}</Text>
-                  <Text className="text-sm text-muted-foreground">
-                    {memory.createdAt}
-                  </Text>
-                </View>
-              </Pressable>
+                <Pressable
+                  key={memory.id}
+                  className="flex-row justify-between items-center py-2 border-b border-border last:border-b-0"
+                  onPress={() => {
+                    // TODO: Navigate to memory detail
+                  }}
+                >
+                  <View>
+                    <Text className=" font-medium">{memory.title}</Text>
+                    <Text className="text-sm text-muted-foreground">
+                      {memory.createdAt}
+                    </Text>
+                  </View>
+                </Pressable>
+              </Link>
             ))}
           </CardContent>
           <CardFooter>

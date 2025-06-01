@@ -3,14 +3,13 @@ import {
   View,
   TouchableOpacity,
   TextInput,
-  ScrollView,
+
   Alert,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Text } from "~/components/ui";
-import DraggableFlatList, {
-  RenderItemParams,
-} from "react-native-draggable-flatlist";
+import { Text, Button } from "~/components/ui";
+
+
 import { GripVertical, X, Edit2, Save, Plus } from "~/lib/icons";
 // import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { useFocusEffect } from "expo-router";
@@ -37,21 +36,6 @@ export const ManageQuestions = () => {
   const loadQuestions = async () => {
     setQuestions(defaultQuestions);
     await AsyncStorage.setItem("questions", JSON.stringify(defaultQuestions));
-    // try {
-    //   const storedQuestions = await AsyncStorage.getItem("questions");
-    //   setQuestions(defaultQuestions);
-    //   await AsyncStorage.setItem("questions", JSON.stringify(defaultQuestions));
-
-    //   if (storedQuestions) {
-    //     if (storedQuestions.length === 0) setQuestions(defaultQuestions);
-    //     else setQuestions(JSON.parse(storedQuestions));
-    //     setQuestions(JSON.parse(storedQuestions));
-    //   } else {
-    //     setQuestions(defaultQuestions);
-    //   }
-    // } catch (error) {
-    //   console.error("Error loading questions:", error);
-    // }
   };
 
   const saveQuestions = async (updatedQuestions: Question[]) => {
@@ -66,7 +50,7 @@ export const ManageQuestions = () => {
   const handleAddQuestion = () => {
     if (newQuestion.trim()) {
       const newQuestionItem: Question = {
-        label: newQuestion.trim(),
+        // label: newQuestion.trim(),
         value: `custom-${Date.now()}`,
         index: questions.length,
       };
@@ -77,7 +61,7 @@ export const ManageQuestions = () => {
 
   const handleEditStart = (index: number) => {
     setEditingIndex(index);
-    setEditedText(questions[index].label);
+    // setEditedText(questions[index].label);
   };
 
   const handleEditSave = () => {
@@ -85,7 +69,7 @@ export const ManageQuestions = () => {
       const updatedQuestions = [...questions];
       updatedQuestions[editingIndex] = {
         ...updatedQuestions[editingIndex],
-        label: editedText.trim(),
+        // label: editedText.trim(),
       };
       saveQuestions(updatedQuestions);
       setEditingIndex(null);
@@ -132,7 +116,7 @@ export const ManageQuestions = () => {
           </View>
         ) : (
           <View className="flex-1 flex-row items-center justify-between">
-            <Text className="text-base flex-1">{item.label}</Text>
+            {/* <Text className="text-base flex-1">{item.label}</Text> */}
             <View className="flex-row">
               <TouchableOpacity
                 onPress={() => handleEditStart(index)}
@@ -154,7 +138,7 @@ export const ManageQuestions = () => {
   };
 
   return (
-    <View className="flex-1 bg-white">
+    <View className="flex-1 bg-card-foreground">
       {/* <DraggableFlatList
         data={questions}
         renderItem={({ item, drag, isActive }) => (
@@ -175,7 +159,7 @@ export const ManageQuestions = () => {
             placeholder="Add a new question..."
             className="flex-1 text-base py-2 px-3 border border-gray-300 rounded-lg"
           />
-          <TouchableOpacity
+          <Button
             onPress={handleAddQuestion}
             disabled={!newQuestion.trim()}
             className={`p-3 rounded-lg ${
@@ -183,7 +167,7 @@ export const ManageQuestions = () => {
             }`}
           >
             <Plus size={20} color="white" />
-          </TouchableOpacity>
+          </Button>
         </View>
       </View>
     </View>

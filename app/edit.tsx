@@ -23,7 +23,7 @@ const CreateMemoryScreen: React.FC = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
-        className="px-4 py-6"
+        className="px-4"
         contentContainerStyle={{ paddingBottom: 60 }}
       >
         <EditCardForm data={data} />

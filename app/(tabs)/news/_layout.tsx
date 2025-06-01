@@ -84,7 +84,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
         onPress={() => {
           //...
         }}
-        labelStyle={{ color: "var(--foreground)" }} // Changed DrawerItem label style to use CSS variable for semantic color
+        // labelStyle={{ color: "var(--foreground)" }} // Changed DrawerItem label style to use CSS variable for semantic color
       />
     </DrawerContentScrollView>
   );

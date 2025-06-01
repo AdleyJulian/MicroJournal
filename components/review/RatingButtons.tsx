@@ -28,7 +28,7 @@ export const RatingButtons = ({
     {
       rating: Rating.Hard,
       label: "Hard",
-      color: "bg-orange",
+      color: "bg-yellow",
     },
     {
       rating: Rating.Good,

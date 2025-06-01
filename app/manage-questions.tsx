@@ -14,7 +14,7 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ChevronLeft, GripVertical, X, Edit2, Plus, Save } from "~/lib/icons";
-import { Text } from "~/components/ui";
+import { Button, Text } from "~/components/ui";
 import { useFocusEffect } from "expo-router";
 import { StyleSheet } from "react-native";
 
@@ -72,25 +72,6 @@ const ManageQuestionsScreen = () => {
   const loadQuestions = async () => {
     setQuestions(defaultQuestions);
     await AsyncStorage.setItem("questions", JSON.stringify(defaultQuestions));
-    // try {
-    //   const stored = await AsyncStorage.getItem("questions");
-    //   if (stored) {
-    //     const parsedQuestions = JSON.parse(stored);
-    //     if (parsedQuestions.length === 0) {
-    //       setQuestions(defaultQuestions);
-    //       await AsyncStorage.setItem(
-    //         "questions",
-    //         JSON.stringify(defaultQuestions)
-    //       );
-    //     } else {
-    //       setQuestions(parsedQuestions);
-    //     }
-    //   } else {
-    //     setQuestions(defaultQuestions);
-    //   }
-    // } catch (error) {
-    //   console.error("Error loading questions:", error);
-    // }
   };
 
   const saveQuestions = async (updatedQuestions: Question[]) => {
@@ -168,7 +149,7 @@ const ManageQuestionsScreen = () => {
             activeOpacity={1}
             onLongPress={drag}
             disabled={isActive}
-            className={`bg-white border border-gray-200 rounded-lg mb-2`}
+            className="bg-card border border-border rounded-lg mb-2"
             style={[isActive && styles.shadowEffect]}
           >
             <View className="flex-row items-center p-4 gap-3">
@@ -187,13 +168,13 @@ const ManageQuestionsScreen = () => {
                     />
                     <TouchableOpacity
                       onPress={() => handleEditSave(item.value)}
-                      className="bg-blue-500 rounded-lg px-3 py-2"
+                      className="bg-primary rounded-lg px-3 py-2"
                     >
-                      <Text className="text-white">Save</Text>
+                      <Text className="text-primary-foreground">Save</Text>
                     </TouchableOpacity>
                   </View>
                 ) : (
-                  <Text className="text-gray-700">{item.value}</Text>
+                  <Text className="text-foreground">{item.value}</Text>
                 )}
               </View>
 
@@ -227,11 +208,11 @@ const ManageQuestionsScreen = () => {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className="flex-1 bg-background">
       {/* Header */}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="border-t border-gray-200 bg-white"
+        className="border-t border-border bg-background"
       >
         <View className="p-4">
           <View className="flex-row gap-2">
@@ -239,18 +220,17 @@ const ManageQuestionsScreen = () => {
               value={newQuestion}
               onChangeText={setNewQuestion}
               placeholder="Add a new question..."
-              className="flex-1 border border-gray-300 rounded-lg px-4 py-2"
+              className="flex-1 border border-input rounded-lg px-4 py-2 text-foreground"
+              placeholderTextColor={"#9ca3af"}
             />
-            <TouchableOpacity
+            <Button
               onPress={handleAddQuestion}
               disabled={!newQuestion.trim()}
-              className={`px-4 py-2 rounded-lg flex-row items-center ${
-                newQuestion.trim() ? "bg-blue-500" : "bg-gray-300"
-              }`}
+              className={`px-4 py-2 rounded-lg flex-row items-center`}
             >
               <Plus size={20} color="white" />
-              <Text className="text-white ml-2">Add</Text>
-            </TouchableOpacity>
+              <Text className="ml-2 text-primary-foreground">Add</Text>
+            </Button>
           </View>
         </View>
       </KeyboardAvoidingView>

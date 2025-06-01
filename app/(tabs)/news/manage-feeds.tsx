@@ -10,13 +10,13 @@ import type { RSSFeed } from "@/hooks/useRSSFeed";
 import { useRSSFeedConfig } from "@/contexts/RSSFeedConfigContext"; // Import from context file
 
 const NewsFeedManagementPage = () => {
-  const { feedSources, addFeedSource, deleteFeedSource, saveFeedSources } =
+  const { feedSources, addFeedSource, deleteFeedSource, updateFeedSources } =
     useRSSFeedConfig();
   const [newFeedUrl, setNewFeedUrl] = useState("");
   const [newFeedTitle, setNewFeedTitle] = useState("");
 
-  const handleAddFeed = () => {
-    if (addFeedSource(newFeedUrl, newFeedTitle)) {
+  const handleAddFeed = async () => {
+    if (await addFeedSource(newFeedUrl, newFeedTitle)) {
       setNewFeedUrl("");
       setNewFeedTitle("");
     }
@@ -69,12 +69,14 @@ const NewsFeedManagementPage = () => {
           onChangeText={setNewFeedTitle}
           placeholder="Feed Title (e.g., NYT Headlines)"
           className="mb-2"
+          placeholderTextColor={"#888"}
         />
         <Input
           value={newFeedUrl}
           onChangeText={setNewFeedUrl}
           placeholder="RSS Feed URL"
           className="mb-2"
+          placeholderTextColor={"#888"}
         />
         <Button
           onPress={handleAddFeed}
@@ -95,7 +97,7 @@ const NewsFeedManagementPage = () => {
             data={feedSources}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
-            onDragEnd={({ data }) => saveFeedSources(data)}
+            onDragEnd={({ data }) => updateFeedSources(data)}
           />
         </View>
       )}

@@ -2,7 +2,11 @@
 import React, { createContext, useContext } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { 
+  useQuery, 
+  useMutation, 
+  useQueryClient
+} from "@tanstack/react-query";
 
 export type RSSFeed = {
   id: string;
@@ -86,10 +90,7 @@ export const RSSFeedConfigProvider = ({
   });
 
   // Add a new feed source
-  const addFeedSource = async (
-    url: string,
-    title: string
-  ): Promise<boolean> => {
+  const addFeedSource = async (url: string, title: string): Promise<boolean> => {
     if (!url.trim() || !title.trim()) {
       Alert.alert("Invalid Input", "Please enter both URL and Title");
       return false;
@@ -121,9 +122,7 @@ export const RSSFeedConfigProvider = ({
           text: "Delete",
           style: "destructive",
           onPress: async () => {
-            await updateFeedSources(
-              feedSources.filter((feed) => feed.id !== id)
-            );
+            await updateFeedSources(feedSources.filter((feed) => feed.id !== id));
           },
         },
       ]

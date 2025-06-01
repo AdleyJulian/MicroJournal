@@ -1,11 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { is } from "drizzle-orm";
-import { Pressable, View } from "react-native";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { MoonStar } from "~/lib/icons/MoonStar";
 import { Sun } from "~/lib/icons/Sun";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { cn } from "~/lib/utils";
+import { Button } from "@/components/ui/";
 
 export function ThemeToggle() {
   const { isDarkColorScheme, setColorScheme } = useColorScheme();
@@ -20,44 +19,28 @@ export function ThemeToggle() {
 
   if (!isDarkColorScheme) {
     return (
-      <Pressable
+      <Button
+        variant={"ghost"}
         onPress={() => toggleTheme("dark")}
-        className="web:ring-offset-background web:transition-colors web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 ms-6"
+        // className="web:ring-offset-background web:transition-colors web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 ms-6"
       >
-        {({ pressed }) => (
-          <View
-            className={cn(
-              "flex-1 aspect-square pt-0.5 justify-center items-start web:px-5",
-              pressed && "opacity-70"
-            )}
-          >
-            <MoonStar className="text-blue-500" size={23} strokeWidth={2} />
-          </View>
-        )}
-      </Pressable>
+        <MoonStar className="text-blue-500" size={23} strokeWidth={2} />
+      </Button>
     );
   }
 
   return (
-    <Pressable
+    <Button
       onPress={() => toggleTheme("light")}
-      className="web:ring-offset-background web:transition-colors web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 ms-6"
+      variant={"ghost"}
+      // className="web:ring-offset-background web:transition-colors web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 ms-6"
     >
-      {({ pressed }) => (
-        <View
-          className={cn(
-            "flex-1 aspect-square pt-0.5 justify-center items-start web:px-5",
-            pressed && "opacity-70"
-          )}
-        >
-          <Sun
-            className="text-yellow-500"
-            size={23}
-            strokeWidth={2}
-            color={"#FFD700"}
-          />
-        </View>
-      )}
-    </Pressable>
+      <Sun
+        className="text-yellow-500"
+        size={23}
+        strokeWidth={2}
+        color={"#FFD700"}
+      />
+    </Button>
   );
 }

@@ -126,12 +126,6 @@ export const EditCardForm: React.FC<props> = (props) => {
 
   return (
     <Form {...form}>
-      <View>
-        <Text className="my-2 text-4xl text-primary font-extrabold tracking-tight">
-          Edit
-        </Text>
-      </View>
-
       <Card className="p-2 justify-normal">
         <FormItem className="mb-2">
           <FormField
