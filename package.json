@@ -124,8 +124,14 @@
   },
   "expo": {
     "doctor": {
-      "dependencyCheck": {
-        "exclude": []
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "react-native-xml2js",
+          "react-native-sortable-list",
+          "react-native-rss-parser",
+          "xml2js"
+        ],
+        "listUnknownPackages": false
       }
     }
   }
