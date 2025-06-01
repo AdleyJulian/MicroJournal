@@ -11,15 +11,13 @@
     "preview": {
       "distribution": "internal",
       "android": {
-        "gradleCommand": ":app:assembleRelease",
-        "workingDir": "."
+        "gradleCommand": ":app:assembleRelease"
       }
     },
     "production": {
       "autoIncrement": true,
       "android": {
-        "gradleCommand": ":app:assembleRelease",
-        "workingDir": "."
+        "gradleCommand": ":app:assembleRelease"
       }
     }
   },
