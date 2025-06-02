@@ -28,6 +28,7 @@
         <data android:scheme="myapp"/>
         <data android:scheme="com.anonymous.MicroJournal"/>
         <data android:scheme="exp+microjournal"/>
+        <data android:scheme="exp+pensieve"/>
       </intent-filter>
     </activity>
   </application>

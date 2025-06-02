@@ -114,7 +114,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background">
       <View className="flex-row justify-between items-center p-4 border-b border-border">
-        <Text className="text-2xl font-bold ">Memory Journal</Text>
+        <Text className="text-2xl font-bold ">Pensieve</Text>
         <View className="flex-row">
           <Link asChild href={"/settings"}>
             <Button variant={"ghost"}>

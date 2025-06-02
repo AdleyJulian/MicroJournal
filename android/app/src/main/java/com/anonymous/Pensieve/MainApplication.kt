@@ -1,4 +1,4 @@
-package com.anonymous.MicroJournal
+package com.anonymous.Pensieve
 
 import android.app.Application
 import android.content.res.Configuration
