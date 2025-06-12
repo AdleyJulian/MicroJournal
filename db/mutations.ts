@@ -17,12 +17,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export async function newEntry(entry: JournalEntryContent, cardType?: string) {
   const card = newCard(entry);
+  type CardType = "default" | "user";
 
   console.log("Recieved Entry", entry);
 
   // Prepare journal entry data (without image for now, as per schema update)
   const newJournalEntry = {
-    cardType: cardType || "user",
+    cardType:
+      cardType === "default" || cardType === "user"
+        ? cardType
+        : ("default" as CardType), // Validate cardType
     due: card.due,
     stability: card.stability,
     difficulty: card.difficulty,
@@ -41,7 +45,7 @@ export async function newEntry(entry: JournalEntryContent, cardType?: string) {
 
   try {
     // 1. Insert the journal entry first and get its ID
-    const createdEntry = await db
+    const createdEntry = db
       .insert(journalEntries)
       .values(newJournalEntry)
       .returning({ id: journalEntries.id }) // Return the id of the newly inserted entry
@@ -191,13 +195,15 @@ export const updateEntrywithReview = async (input: {
 }) => {
   const { entry, grade } = input;
   const { card, log } = await reviewEntry(entry, grade);
+  console.log("Updating entry with review:", JSON.stringify(entry, null, 2));
+  console.log("Card after review:", JSON.stringify(card, null, 2));
   const result: JournalEntry = {
     id: entry.id,
     due: card.due,
     stability: card.stability,
     difficulty: card.difficulty,
-    elapsedDays: log.elapsed_days,
-    scheduledDays: log.scheduled_days,
+    elapsedDays: card.elapsed_days,
+    scheduledDays: card.scheduled_days,
     reps: card.reps,
     lapses: card.lapses,
     state: card.state.toString(),
@@ -206,11 +212,15 @@ export const updateEntrywithReview = async (input: {
     promptQuestion: entry.promptQuestion,
     answer: entry.answer,
     createdAt: entry.createdAt,
+    articleJson: entry.articleJson || null,
+    cardType: entry.cardType || "user", // Ensure cardType is set
+    lastReview: card.last_review || null, // Ensure lastReview is set
   };
   db.update(journalEntries)
     .set(result)
     .where(eq(journalEntries.id, entry.id))
     .run();
+  return { card, log };
 };
 
 export const createArticleEntry = async (article: ArticleData) => {
@@ -256,7 +266,9 @@ export const insertEntries = async (entries: JournalEntryContent[]) => {
 
 export async function createDailyDayOfWeekEntry() {
   try {
-    const defaultCardsSetting = await AsyncStorage.getItem("defaultCardsSetting");
+    const defaultCardsSetting = await AsyncStorage.getItem(
+      "defaultCardsSetting"
+    );
     // If the setting is not explicitly false, proceed to create the card.
     // This covers cases where it's true or not set yet (defaulting to true behavior).
     if (defaultCardsSetting !== "false") {
@@ -266,7 +278,9 @@ export async function createDailyDayOfWeekEntry() {
         month: "long",
         day: "numeric",
       });
-      const dayOfWeek = currentDate.toLocaleDateString("en-US", { weekday: "long" });
+      const dayOfWeek = currentDate.toLocaleDateString("en-US", {
+        weekday: "long",
+      });
       const promptQuestion = `📅 What day of the week was ${formattedDate}?`;
 
       // Check if an entry with the same prompt question already exists for today
@@ -287,8 +301,9 @@ export async function createDailyDayOfWeekEntry() {
         const entryContent: JournalEntryContent = {
           promptQuestion: promptQuestion,
           answer: dayOfWeek,
-          entryDate: currentDate.toISOString(), // Ensure entryDate is a string
-          // FSRS fields will be set by newCard within newEntry
+          entryDate: currentDate,
+          tags: [],
+          article: null,
         };
         await newEntry(entryContent, "default");
         console.log("Daily day of the week entry created.");

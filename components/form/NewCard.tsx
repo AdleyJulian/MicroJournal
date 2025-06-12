@@ -26,16 +26,16 @@ import { router } from "expo-router";
 
 import Toast from "react-native-toast-message";
 
-const questions = [
-  { label: "What was the best part of your day?", value: "best-part" },
-  {
-    label: "What interesting place did you visit today?",
-    value: "interesting-place",
-  },
-  { label: "What did you work on?", value: "work" },
-  { label: "What did you read/watch?", value: "read-watch" },
-  { label: "Did you meet anyone new?", value: "meet-new" },
-];
+// const questions = [
+//   { label: "What was the best part of your day?", value: "best-part" },
+//   {
+//     label: "What interesting place did you visit today?",
+//     value: "interesting-place",
+//   },
+//   { label: "What did you work on?", value: "work" },
+//   { label: "What did you read/watch?", value: "read-watch" },
+//   { label: "Did you meet anyone new?", value: "meet-new" },
+// ];
 type ArticleObject = { articleData: ArticleData };
 
 const showToast = () => {
@@ -99,7 +99,7 @@ export const NewCardForm: React.FC<ArticleObject> = (props) => {
         answer: form.getValues("answer"),
         mediaPath: form.getValues("media")?.mediaPath,
         mediaSourceType: form.getValues("media")?.mediaSourceType,
-        entryDate: new Date(form.getValues("date") || Date.now()).getTime(),
+        entryDate: new Date(form.getValues("date") || Date.now()),
       };
 
       // Insert the card into the database

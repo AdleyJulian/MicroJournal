@@ -3,7 +3,6 @@ import {
   generatorParameters,
   fsrs,
   createEmptyCard,
-  Rating,
   State,
   Grade,
 } from "ts-fsrs";
@@ -46,6 +45,8 @@ export const newCard = (data: JournalEntryContent) => {
     articleJson: data.article,
     createdAt: new Date(),
     updatedAt: new Date(),
+    cardType: "user",
+    lastReview: null,
   };
   return journalEntry;
 };
@@ -99,9 +100,9 @@ export const getPreview = (entry: JournalEntry) => {
     reps: entry.reps,
     lapses: entry.lapses,
     state: state as State,
+    last_review: entry.lastReview === null ? undefined : entry.lastReview,
   };
-
-  return f.repeat(card, new Date());
+  return f.repeat(card, entry.due);
 };
 
 export const reviewEntry = async (entry: JournalEntry, grade: Grade) => {

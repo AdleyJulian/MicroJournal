@@ -1,0 +1,1 @@
+ALTER TABLE `journal_cards` ADD `last_review` integer;

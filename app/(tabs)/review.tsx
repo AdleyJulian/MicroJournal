@@ -8,12 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getPreview } from "~/db/fsrs";
 import { Grade } from "ts-fsrs";
-import {
-  RatingButtons,
-  ProgressBar,
-  Menu,
-  StateCount,
-} from "@/components/review";
+import { RatingButtons, Menu, StateCount } from "@/components/review";
 import { useRefreshOnFocus } from "@/hooks/useRefreshOnFocus";
 
 const ReviewScreen = () => {
@@ -48,8 +43,8 @@ const ReviewScreen = () => {
 
   const { mutateAsync: submitReview } = useMutation({
     mutationFn: updateEntrywithReview,
-    onSuccess: () => {
-      console.log("Review submitted successfully");
+    onSuccess: (result) => {
+      console.log(JSON.stringify(result));
     },
   });
 
@@ -96,6 +91,12 @@ const ReviewScreen = () => {
       <View className="flex-1">
         {/* <ProgressBar current={currentIndex} total={orderedEntries.length} /> */}
         <StateCount statesCount={statesCount} />
+        <Button onPress={() => refetch()} className="mt-4">
+          <Text>Refresh</Text>
+        </Button>
+        <Button>
+          <Text> Log Current Card Data</Text>
+        </Button>
         {/* Entry date and stats */}
         <View className="px-4 py-2 border-b ">
           <View className="flex-row items-center justify-between">

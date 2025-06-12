@@ -29,7 +29,7 @@ export const JournalEntryContentSchema = z.object({
   mediaPath: z.string().optional(), // Could be a URL or file path - optional as image is optional
   mediaSourceType: z.enum(["url", "file"]).optional(), //  optional as image is optional, if mediaPath is present, sourceType should be too.  You might want to enforce this more strictly in your application logic.
   answer: z.string(),
-  entryDate: z.number(), // Unix timestamp
+  entryDate: z.date(), // Unix timestamp
 });
 
 export const JournalEntryUpdateSchema = JournalEntryContentSchema.extend({
