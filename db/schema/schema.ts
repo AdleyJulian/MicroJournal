@@ -10,6 +10,7 @@ import {
 } from "drizzle-orm/sqlite-core";
 import { type ArticleData } from "./types";
 import { State } from "ts-fsrs";
+import { uniqueIndex } from "drizzle-orm/mysql-core";
 
 // Enum to match ts-fsrs State
 // Card State Enum (matching ts-fsrs states)
@@ -22,7 +23,6 @@ export enum CardState {
 // Journal Cards Table (Direct FSRS Card Storage)
 export const journalEntries = sqliteTable("journal_cards", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-
   // FSRS Card Fields (Direct Mapping)
   due: integer("due", { mode: "timestamp" }).notNull(),
   stability: real("stability").notNull(),

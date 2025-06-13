@@ -3,13 +3,13 @@ import { View, ScrollView } from "react-native";
 import { updateEntrywithReview } from "~/db/mutations";
 import { getDueEntries } from "~/db/queries";
 import { Button, Card, CardHeader, Text } from "~/components/ui/";
-import { format } from "date-fns";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getPreview } from "~/db/fsrs";
 import { Grade } from "ts-fsrs";
 import { RatingButtons, Menu, StateCount } from "@/components/review";
 import { useRefreshOnFocus } from "@/hooks/useRefreshOnFocus";
+import { formatInTimeZone } from "date-fns-tz";
 
 const ReviewScreen = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -24,21 +24,21 @@ const ReviewScreen = () => {
 
   const entries = data || [];
   const statesCount = {
-    New: entries.filter((entry) => entry.state === "0").length,
-    Learning: entries.filter((entry) => entry.state === "1").length,
-    Review: entries.filter((entry) => entry.state === "2").length,
-    Relearning: entries.filter((entry) => entry.state === "3").length,
-  };
-
-  const stateOrder: Record<string, number> = {
-    "1": 1, // Learning
-    "3": 2, // Relearning
-    "0": 3, // New
-    "2": 4, // Review
+    New: entries.filter((entry) => entry.state === "0" || entry.state === "new")
+      .length,
+    Learning: entries.filter(
+      (entry) => entry.state === "1" || entry.state === "learning"
+    ).length,
+    Review: entries.filter(
+      (entry) => entry.state === "2" || entry.state === "review"
+    ).length,
+    Relearning: entries.filter(
+      (entry) => entry.state === "3" || entry.state === "relearning"
+    ).length,
   };
 
   const orderedEntries = entries.sort((a, b) => {
-    return (stateOrder[a.state] ?? 5) - (stateOrder[b.state] ?? 5);
+    return new Date(a.due).getTime() - new Date(b.due).getTime();
   });
 
   const { mutateAsync: submitReview } = useMutation({
@@ -91,18 +91,16 @@ const ReviewScreen = () => {
       <View className="flex-1">
         {/* <ProgressBar current={currentIndex} total={orderedEntries.length} /> */}
         <StateCount statesCount={statesCount} />
-        <Button onPress={() => refetch()} className="mt-4">
-          <Text>Refresh</Text>
-        </Button>
-        <Button>
-          <Text> Log Current Card Data</Text>
-        </Button>
         {/* Entry date and stats */}
         <View className="px-4 py-2 border-b ">
           <View className="flex-row items-center justify-between">
             <Text className="text-center flex-grow text-2xl font-medium  ml-12">
               {currentEntry?.entryDate
-                ? format(new Date(currentEntry.entryDate), "MMMM d, yyyy")
+                ? formatInTimeZone(
+                    currentEntry.entryDate,
+                    "UTC",
+                    "MMMM d, yyyy"
+                  )
                 : "Date not available"}
             </Text>
             <Menu entryId={currentEntry.id.toString()} />

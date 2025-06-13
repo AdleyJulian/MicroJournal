@@ -9,6 +9,7 @@ import {
   JournalEntryContent,
   ArticleData,
   JournalEntryUpdate,
+  ReviewState,
 } from "./schema/types";
 import { newCard, type ReviewGrade, reviewEntry } from "./fsrs";
 import * as FileSystem from "expo-file-system";
@@ -197,6 +198,9 @@ export const updateEntrywithReview = async (input: {
   const { card, log } = await reviewEntry(entry, grade);
   console.log("Updating entry with review:", JSON.stringify(entry, null, 2));
   console.log("Card after review:", JSON.stringify(card, null, 2));
+
+  const newStateString = ReviewState[card.state as State];
+
   const result: JournalEntry = {
     id: entry.id,
     due: card.due,
@@ -206,7 +210,7 @@ export const updateEntrywithReview = async (input: {
     scheduledDays: card.scheduled_days,
     reps: card.reps,
     lapses: card.lapses,
-    state: card.state.toString(),
+    state: newStateString,
     entryDate: entry.entryDate,
     updatedAt: new Date(),
     promptQuestion: entry.promptQuestion,
@@ -220,7 +224,6 @@ export const updateEntrywithReview = async (input: {
     .set(result)
     .where(eq(journalEntries.id, entry.id))
     .run();
-  return { card, log };
 };
 
 export const createArticleEntry = async (article: ArticleData) => {
@@ -287,14 +290,7 @@ export async function createDailyDayOfWeekEntry() {
       const existingEntry = await db
         .select()
         .from(journalEntries)
-        .where(
-          and(
-            eq(journalEntries.promptQuestion, promptQuestion),
-            eq(journalEntries.cardType, "default"),
-            // Compare dates by ignoring the time component
-            sql`date(entry_date / 1000, 'unixepoch') = date(${currentDate.getTime()} / 1000, 'unixepoch')`
-          )
-        )
+        .where(and(eq(journalEntries.promptQuestion, promptQuestion)))
         .get();
 
       if (!existingEntry) {
