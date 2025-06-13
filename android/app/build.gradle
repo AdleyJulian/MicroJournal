@@ -86,9 +86,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.anonymous.Pensieve'
+    namespace 'com.anonymous.microjournal'
     defaultConfig {
-        applicationId 'com.anonymous.Pensieve'
+        applicationId 'com.anonymous.microjournal'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

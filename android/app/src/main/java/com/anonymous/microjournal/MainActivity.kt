@@ -1,4 +1,4 @@
-package com.anonymous.Pensieve
+package com.anonymous.microjournal
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build
