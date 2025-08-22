@@ -22,6 +22,7 @@ import { RSSFeedConfigProvider } from "@/contexts/RSSFeedConfigContext"; // Impo
 import { RSSFeedProvider } from "@/contexts/RSSFeedContext"; // Import your feed provider
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PortalHost } from "@rn-primitives/portal";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const queryClient = new QueryClient();
 
@@ -55,64 +56,86 @@ export default function RootLayout() {
     setIsColorSchemeLoaded(true);
     hasMounted.current = true;
     console.log("Color scheme loaded");
+    console.log("RootLayout: SafeAreaProvider initialized");
   }, []);
 
-  if (!isColorSchemeLoaded) {
-    return null;
-  }
   return (
-    <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <DatabaseProvider>
-        <QueryClientProvider client={queryClient}>
-          <GestureHandlerRootView>
-            <BottomSheetModalProvider>
-              <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-              <RSSFeedConfigProvider>
-                <RSSFeedProvider
-                  initialRssFeeds={[]}
-                  initialOptions={{
-                    limit: 100,
-                    refreshInterval: 5 * 60 * 1000, // 5 minutes
-                    cacheTimeout: 30, // 30 minutes
-                  }}
-                >
-                  <Stack>
-                    <Stack.Screen
-                      name="(tabs)"
-                      options={{ headerShown: false }}
-                    />
-                    <Stack.Screen name="+not-found" />
-                    {/* <Stack.Screen
-                name="manage-feeds"
-                options={{ title: "Manage Feeds" }}
-              /> */}
-                    <Stack.Screen
-                      name="manage-questions"
-                      options={{ title: "Manage Questions" }}
-                    />
-                    <Stack.Screen
-                      name="entries/index"
-                      options={{ title: "Entry", headerShown: false }}
-                    />
-                    <Stack.Screen
-                      name="settings"
-                      options={{ title: "Settings", headerShown: true }}
-                    />
-                    <Stack.Screen
-                      name="edit"
-                      options={{ title: "Edit", headerShown: true }}
-                    />
-                  </Stack>
-                  <PortalHost />
-                </RSSFeedProvider>
-              </RSSFeedConfigProvider>
+    <SafeAreaProvider
+      style={{ flex: 1 }}
+      initialMetrics={{
+        frame: { x: 0, y: 0, width: 0, height: 0 },
+        insets: { top: 0, left: 0, right: 0, bottom: 0 },
+      }}
+    >
+      <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+        <DatabaseProvider>
+          <QueryClientProvider client={queryClient}>
+            <GestureHandlerRootView>
+              <BottomSheetModalProvider>
+                <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+                <RSSFeedConfigProvider>
+                  <RSSFeedProvider
+                    initialRssFeeds={[]}
+                    initialOptions={{
+                      limit: 100,
+                      refreshInterval: 5 * 60 * 1000, // 5 minutes
+                      cacheTimeout: 30, // 30 minutes
+                    }}
+                  >
+                    {isColorSchemeLoaded ? (
+                      <Stack>
+                        <Stack.Screen
+                          name="(tabs)"
+                          options={{ headerShown: false }}
+                        />
+                        <Stack.Screen name="+not-found" />
+                        {/* <Stack.Screen
+                    name="manage-feeds"
+                    options={{ title: "Manage Feeds" }}
+                  /> */}
+                        <Stack.Screen
+                          name="manage-questions"
+                          options={{ title: "Manage Questions" }}
+                        />
+                        <Stack.Screen
+                          name="entries/index"
+                          options={{ title: "Entry", headerShown: false }}
+                        />
+                        <Stack.Screen
+                          name="settings"
+                          options={{
+                            title: "Settings",
+                            headerShown: false,
+                          }}
+                        />
+                        <Stack.Screen
+                          name="edit"
+                          options={{
+                            title: "Edit",
+                            headerShown: true,
+                            headerStyle: {
+                              backgroundColor: isDarkColorScheme ? '#1C1C1E' : '#FFFFFF',
+                            },
+                            headerTintColor: isDarkColorScheme ? '#FFFFFF' : '#000000',
+                            headerTitleStyle: {
+                              fontWeight: '600',
+                            },
+                            headerTransparent: false,
+                          }}
+                        />
+                      </Stack>
+                    ) : null}
+                    <PortalHost />
+                  </RSSFeedProvider>
+                </RSSFeedConfigProvider>
 
-              <Toast />
-            </BottomSheetModalProvider>
-          </GestureHandlerRootView>
-        </QueryClientProvider>
-      </DatabaseProvider>
-    </ThemeProvider>
+                <Toast />
+              </BottomSheetModalProvider>
+            </GestureHandlerRootView>
+          </QueryClientProvider>
+        </DatabaseProvider>
+      </ThemeProvider>
+    </SafeAreaProvider>
   );
 }
 

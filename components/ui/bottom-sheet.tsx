@@ -101,7 +101,7 @@ const BottomSheetContent = React.forwardRef<
         return {} as BottomSheetModalMethods;
       }
       return sheetRef.current;
-    }, [sheetRef.current]);
+    });
 
     const renderBackdrop = React.useCallback(
       (props: BottomSheetBackdropProps) => {

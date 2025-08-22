@@ -7,6 +7,7 @@ import {
 } from "@/db/schema/schema";
 import { desc, eq, lte, count, and, gte } from "drizzle-orm";
 import { type JournalEntry, type MediaAttachment } from "@/db/schema/schema";
+import { formatDateToUTCString } from "@/lib/dateUtils";
 
 export type AgendaItem = {
   title: string;
@@ -53,9 +54,9 @@ export const getAllEntriesGroupedByDate = async () => {
   entries.forEach((entry) => {
     const { journal_cards, media_attachments } = entry;
     const { entryDate } = journal_cards;
-    const index = Number(entryDate);
 
-    const date = journal_cards.entryDate.toISOString().split("T")[0];
+    // Use consistent date formatting to avoid timezone issues
+    const date = formatDateToUTCString(entryDate);
 
     // Create a new entry object
     const newEntry = {
@@ -127,6 +128,38 @@ export const getDueEntries = async () => {
     .from(journalEntries)
     .where(lte(journalEntries.due, tomorrow))
     .orderBy(desc(journalEntries.due));
+};
+
+export const getDueAndAheadEntries = async (daysAhead: number = 0) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Start of the day
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  let query = db
+    .select()
+    .from(journalEntries)
+    .where(lte(journalEntries.due, tomorrow));
+
+  if (daysAhead > 0) {
+    // For review ahead, also include cards that are scheduled for review
+    // but not yet due (within the specified number of days)
+    const daysFromNow = new Date(today);
+    daysFromNow.setDate(daysFromNow.getDate() + daysAhead);
+
+    query = db
+      .select()
+      .from(journalEntries)
+      .where(
+        and(
+          lte(journalEntries.due, daysFromNow),
+          // Only include cards that are in review state (not new/learning)
+          gte(journalEntries.reps, 1)
+        )
+      );
+  }
+
+  return await query.orderBy(desc(journalEntries.due));
 };
 
 export async function getEntriesByTag(tagName: string) {

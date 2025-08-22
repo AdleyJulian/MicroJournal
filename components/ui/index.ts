@@ -9,6 +9,7 @@ export {
 } from "./collapsible";
 // export {SelectCustom} from './SelectCustom';
 export { ThemeToggle } from "./ThemeToggle";
+export { default as CustomHeader } from "./CustomHeader";
 export { Input } from "./input";
 export { Label } from "./label";
 export { CardContent } from "./card";

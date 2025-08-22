@@ -1,0 +1,328 @@
+{
+  "metadata": {
+    "title": "Pensieve Google Play Store Submission",
+    "version": "1.0",
+    "created": "2024-12-19",
+    "target_completion": "Q1 2025",
+    "total_tasks": 25,
+    "completed_tasks": 0,
+    "priority_level": "HIGH"
+  },
+  "phases": [
+    {
+      "name": "Phase 1: Foundation",
+      "duration": "Week 1-2",
+      "status": "in_progress",
+      "tasks": [
+        {
+          "id": "app_identity_1",
+          "title": "Update app.json with proper package name",
+          "description": "Change from 'com.anonymous.microjournal' to 'com.pensieve.app'",
+          "status": "pending",
+          "priority": "critical",
+          "assignee": "developer",
+          "estimated_hours": 1,
+          "dependencies": [],
+          "subtasks": [
+            "Update name field to 'Pensieve'",
+            "Update slug to 'pensieve'",
+            "Update android.package to 'com.pensieve.app'",
+            "Update ios.bundleIdentifier"
+          ]
+        },
+        {
+          "id": "app_identity_2",
+          "title": "Create professional app icon",
+          "description": "Replace React logo with Pensieve-themed icon",
+          "status": "pending",
+          "priority": "critical",
+          "assignee": "designer",
+          "estimated_hours": 4,
+          "dependencies": [],
+          "subtasks": [
+            "Design Pensieve-themed icon concept",
+            "Generate 512x512px main icon",
+            "Create adaptive icon layers",
+            "Generate all required icon sizes",
+            "Update app.json icon paths"
+          ]
+        },
+        {
+          "id": "legal_1",
+          "title": "Create and publish Privacy Policy",
+          "description": "Write comprehensive privacy policy and host online",
+          "status": "pending",
+          "priority": "critical",
+          "assignee": "legal",
+          "estimated_hours": 6,
+          "dependencies": [],
+          "subtasks": [
+            "Customize privacy policy template",
+            "Add specific data collection details",
+            "Include contact information",
+            "Host on website/GitHub Pages",
+            "Add link to app.json"
+          ]
+        },
+        {
+          "id": "legal_2",
+          "title": "Create Terms of Service",
+          "description": "Write terms of service for user agreement",
+          "status": "pending",
+          "priority": "critical",
+          "assignee": "legal",
+          "estimated_hours": 4,
+          "dependencies": [],
+          "subtasks": [
+            "Write user agreement terms",
+            "Add age restrictions (13+)",
+            "Include data retention policies",
+            "Host online with privacy policy",
+            "Add link to app.json"
+          ]
+        },
+        {
+          "id": "permissions_1",
+          "title": "Fix Android permissions",
+          "description": "Replace overly broad storage permissions",
+          "status": "pending",
+          "priority": "critical",
+          "assignee": "developer",
+          "estimated_hours": 3,
+          "dependencies": ["app_identity_1"],
+          "subtasks": [
+            "Remove WRITE_EXTERNAL_STORAGE permission",
+            "Remove READ_EXTERNAL_STORAGE permission",
+            "Add specific gallery access permissions",
+            "Add file system permissions",
+            "Update AndroidManifest.xml"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Phase 2: Store Assets",
+      "duration": "Week 2",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "assets_1",
+          "title": "Create store screenshots",
+          "description": "Generate 2-8 high-quality screenshots",
+          "status": "pending",
+          "priority": "high",
+          "assignee": "designer",
+          "estimated_hours": 6,
+          "dependencies": [],
+          "subtasks": [
+            "Screenshot main screens (Home, Create, Review, Calendar)",
+            "Include empty and populated states",
+            "Show dark/light mode examples",
+            "Format to 16:9 aspect ratio",
+            "Optimize file sizes"
+          ]
+        },
+        {
+          "id": "assets_2",
+          "title": "Create feature graphic",
+          "description": "Design 1024x500px feature graphic",
+          "status": "pending",
+          "priority": "high",
+          "assignee": "designer",
+          "estimated_hours": 4,
+          "dependencies": [],
+          "subtasks": [
+            "Design Pensieve-themed concept",
+            "Add tagline 'Your Personal Memory Vault'",
+            "Visualize spaced repetition concept",
+            "Ensure 1024x500px dimensions",
+            "Optimize for mobile display"
+          ]
+        },
+        {
+          "id": "content_1",
+          "title": "Write store listing content",
+          "description": "Create compelling app descriptions",
+          "status": "pending",
+          "priority": "high",
+          "assignee": "marketing",
+          "estimated_hours": 3,
+          "dependencies": [],
+          "subtasks": [
+            "Write 80-character short description",
+            "Write 4000-character full description",
+            "Highlight unique FSRS algorithm",
+            "List key features clearly",
+            "Choose appropriate category"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Phase 3: Technical Setup",
+      "duration": "Week 3",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "build_1",
+          "title": "Configure EAS builds",
+          "description": "Set up production build configuration",
+          "status": "pending",
+          "priority": "critical",
+          "assignee": "developer",
+          "estimated_hours": 2,
+          "dependencies": ["app_identity_1"],
+          "subtasks": [
+            "Update eas.json for production builds",
+            "Configure app signing",
+            "Set up build profiles",
+            "Test development builds",
+            "Create production build"
+          ]
+        },
+        {
+          "id": "testing_1",
+          "title": "Device testing",
+          "description": "Test on multiple Android devices",
+          "status": "pending",
+          "priority": "high",
+          "assignee": "qa",
+          "estimated_hours": 8,
+          "dependencies": [],
+          "subtasks": [
+            "Test on Android API 21+",
+            "Test different screen sizes",
+            "Verify dark/light mode",
+            "Test offline functionality",
+            "Check all core features"
+          ]
+        },
+        {
+          "id": "testing_2",
+          "title": "Play Store pre-launch checks",
+          "description": "Use Google Play Console testing tools",
+          "status": "pending",
+          "priority": "high",
+          "assignee": "developer",
+          "estimated_hours": 4,
+          "dependencies": ["build_1"],
+          "subtasks": [
+            "Upload to Play Console internal testing",
+            "Check for crashes and ANRs",
+            "Validate permissions usage",
+            "Test app functionality",
+            "Review app content rating"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Phase 4: Submission",
+      "duration": "Week 4",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "submit_1",
+          "title": "Create Google Play Developer Account",
+          "description": "Set up developer account and pay $25 fee",
+          "status": "pending",
+          "priority": "critical",
+          "assignee": "admin",
+          "estimated_hours": 2,
+          "dependencies": [],
+          "subtasks": [
+            "Create Google account for developer",
+            "Pay $25 registration fee",
+            "Set up merchant account",
+            "Configure tax information",
+            "Verify account ownership"
+          ]
+        },
+        {
+          "id": "submit_2",
+          "title": "Complete Play Store listing",
+          "description": "Fill out all store listing information",
+          "status": "pending",
+          "priority": "critical",
+          "assignee": "marketing",
+          "estimated_hours": 3,
+          "dependencies": ["content_1", "assets_1", "assets_2"],
+          "subtasks": [
+            "Upload feature graphic",
+            "Upload screenshots",
+            "Enter app descriptions",
+            "Set pricing (free)",
+            "Configure content rating"
+          ]
+        },
+        {
+          "id": "submit_3",
+          "title": "Upload and submit app",
+          "description": "Upload APK/AAB and submit for review",
+          "status": "pending",
+          "priority": "critical",
+          "assignee": "developer",
+          "estimated_hours": 2,
+          "dependencies": ["build_1", "submit_1", "submit_2"],
+          "subtasks": [
+            "Generate production build",
+            "Upload to Play Console",
+            "Fill out content rating questionnaire",
+            "Review all submission details",
+            "Submit for review"
+          ]
+        },
+        {
+          "id": "submit_4",
+          "title": "Monitor and respond to review",
+          "description": "Handle any rejection issues",
+          "status": "pending",
+          "priority": "high",
+          "assignee": "developer",
+          "estimated_hours": 4,
+          "dependencies": ["submit_3"],
+          "subtasks": [
+            "Monitor review status",
+            "Respond to any rejection reasons",
+            "Make required fixes",
+            "Resubmit if needed",
+            "Celebrate approval!"
+          ]
+        }
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "name": "Foundation Complete",
+      "date": "Week 2 end",
+      "completion_percentage": 30,
+      "deliverables": ["Updated app.json", "Professional icon", "Privacy policy", "Terms of service"]
+    },
+    {
+      "name": "Assets Complete",
+      "date": "Week 2 end",
+      "completion_percentage": 50,
+      "deliverables": ["Store screenshots", "Feature graphic", "App descriptions"]
+    },
+    {
+      "name": "Technical Ready",
+      "date": "Week 3 end",
+      "completion_percentage": 80,
+      "deliverables": ["EAS builds configured", "Device testing complete", "Pre-launch checks passed"]
+    },
+    {
+      "name": "Submitted",
+      "date": "Week 4 end",
+      "completion_percentage": 100,
+      "deliverables": ["App submitted to Play Store", "Review process started"]
+    }
+  ],
+  "budget": {
+    "google_play_account": 25,
+    "professional_icons": "50-150",
+    "domain_privacy_policy": "10-15/year",
+    "total_one_time": "85-190",
+    "total_annual": "10-15"
+  }
+}

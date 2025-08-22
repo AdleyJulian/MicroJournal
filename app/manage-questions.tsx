@@ -3,7 +3,6 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  SafeAreaView,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -208,7 +207,7 @@ const ManageQuestionsScreen = () => {
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <View className="flex-1 bg-background">
       {/* Header */}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -245,7 +244,7 @@ const ManageQuestionsScreen = () => {
       />
 
       {/* Add New Question */}
-    </SafeAreaView>
+    </View>
   );
 };
 export default ManageQuestionsScreen;

@@ -2,9 +2,9 @@ import { useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import * as queries from "@/db/queries";
 import * as mutations from "@/db/mutations";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "@/components/ui";
 import { ScrollView } from "react-native-gesture-handler";
+import { View } from "react-native";
 import {
   EntryHeader,
   MediaSection,
@@ -24,15 +24,15 @@ export default function JournalEntryScreen() {
 
   if (isError || !data) {
     return (
-      <SafeAreaView className="flex-1 bg-background p-4">
+      <View className="flex-1 bg-background p-4">
         <Text className="text-2xl font-bold">Error loading entry</Text>
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView className="bg-background">
-      <ScrollView>
+    <View className="flex-1 bg-background">
+      <ScrollView className="flex-1">
         <EntryHeader entry={data.journal_cards} isLoading={isLoading} />
         {/* <EntryContent entry={data.journal_cards} isLoading={isLoading} /> */}
         <MediaSection
@@ -43,6 +43,6 @@ export default function JournalEntryScreen() {
         <EntryMetrics entry={data.journal_cards} isLoading={isLoading} />
         <EntryActions entryId={id} isLoading={isLoading} />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

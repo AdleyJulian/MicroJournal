@@ -2,6 +2,7 @@ import { View, ScrollView, Pressable } from "react-native";
 import React, { useEffect } from "react"; // Import useEffect
 import { useRefreshOnFocus } from "@/hooks/useRefreshOnFocus";
 import { createDailyDayOfWeekEntry } from "@/db/mutations"; // Import the new function
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
   Text,
@@ -14,7 +15,7 @@ import {
 } from "@/components/ui";
 import { Link } from "expo-router";
 import { Brain, Calendar, Settings } from "@/lib/icons";
-import { SafeAreaView } from "react-native-safe-area-context";
+
 import * as queries from "@/db/queries";
 import { useQuery } from "@tanstack/react-query";
 import { formatDistance } from "date-fns/formatDistance";
@@ -26,9 +27,12 @@ type Memory = {
 };
 
 export default function HomeScreen() {
+  const insets = useSafeAreaInsets();
+
   useEffect(() => {
     createDailyDayOfWeekEntry();
-  }, []); // Empty dependency array ensures this runs once on mount
+    console.log('HomeScreen insets:', insets);
+  }, [insets]); // Empty dependency array ensures this runs once on mount
 
   const { data: reviewsDue, refetch: refetchReviewsDue } = useQuery({
     queryKey: ["getDueEntries"],
@@ -112,8 +116,8 @@ export default function HomeScreen() {
     })) || [];
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
-      <View className="flex-row justify-between items-center p-4 border-b border-border">
+    <View className="flex-1 bg-background">
+      <View className="flex-row justify-between items-center px-4 border-b border-border">
         <Text className="text-2xl font-bold ">Pensieve</Text>
         <View className="flex-row">
           <Link asChild href={"/settings"}>
@@ -197,6 +201,6 @@ export default function HomeScreen() {
           </CardContent>
         </Card>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

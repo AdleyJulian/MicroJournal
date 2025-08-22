@@ -1,6 +1,5 @@
 import React from "react";
-import { ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView, View } from "react-native";
 import { NewCardForm } from "@/components/form/NewCard";
 
 import { useLocalSearchParams } from "expo-router";
@@ -13,14 +12,14 @@ const CreateMemoryScreen: React.FC = () => {
     : null;
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <ScrollView
-        className="px-4 py-6"
+        className="px-4 pb-6"
         contentContainerStyle={{ paddingBottom: 60 }}
       >
         <NewCardForm articleData={articleData} />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

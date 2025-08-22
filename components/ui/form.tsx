@@ -216,7 +216,7 @@ const FormInput = React.forwardRef<
       return {} as React.ComponentRef<typeof Input>;
     }
     return inputRef.current;
-  }, [inputRef.current]);
+  });
 
   function handleOnLabelPress() {
     if (!inputRef.current) {
@@ -274,7 +274,7 @@ const FormTextarea = React.forwardRef<
       return {} as React.ComponentRef<typeof Textarea>;
     }
     return textareaRef.current;
-  }, [textareaRef.current]);
+  });
 
   function handleOnLabelPress() {
     if (!textareaRef.current) {
@@ -610,7 +610,7 @@ const FormSwitch = React.forwardRef<
       return {} as React.ComponentRef<typeof Switch>;
     }
     return switchRef.current;
-  }, [switchRef.current]);
+  });
 
   function handleOnLabelPress() {
     onChange?.(!value);
@@ -662,7 +662,7 @@ interface FormImageSelectorProps<
 }
 
 const FormImageSelector = React.forwardRef<
-  typeof TouchableOpacity,
+  React.ElementRef<typeof TouchableOpacity>,
   FormImageSelectorProps
 >(
   (
@@ -765,6 +765,7 @@ const FormImageSelector = React.forwardRef<
         <View className="space-y-2">
           <View className="flex-row ">
             <TouchableOpacity
+              ref={ref}
               onPress={pickImage}
               disabled={disabled}
               className={`

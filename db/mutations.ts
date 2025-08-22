@@ -15,6 +15,7 @@ import { newCard, type ReviewGrade, reviewEntry } from "./fsrs";
 import * as FileSystem from "expo-file-system";
 import { Grade, RatingType, State } from "ts-fsrs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { parseDateStringToUTC } from "@/lib/dateUtils";
 
 export async function newEntry(entry: JournalEntryContent, cardType?: string) {
   const card = newCard(entry);
@@ -23,11 +24,22 @@ export async function newEntry(entry: JournalEntryContent, cardType?: string) {
   console.log("Recieved Entry", entry);
 
   // Prepare journal entry data (without image for now, as per schema update)
+  // Ensure entryDate is properly handled - if it's already a Date object from our utilities, use it directly
+  // If it's a string, parse it as UTC to maintain consistency
+  let entryDate: Date;
+  if (entry.entryDate instanceof Date) {
+    entryDate = entry.entryDate;
+  } else if (typeof entry.entryDate === 'string') {
+    entryDate = parseDateStringToUTC(entry.entryDate);
+  } else {
+    entryDate = new Date();
+  }
+
   const newJournalEntry = {
     cardType:
       cardType === "default" || cardType === "user"
         ? cardType
-        : ("default" as CardType), // Validate cardType
+        : ("user" as CardType), // Validate cardType
     due: card.due,
     stability: card.stability,
     difficulty: card.difficulty,
@@ -38,7 +50,7 @@ export async function newEntry(entry: JournalEntryContent, cardType?: string) {
     state: "new",
     promptQuestion: entry.promptQuestion,
     answer: entry.answer,
-    entryDate: new Date(entry.entryDate), // Convert to timestamp
+    entryDate: entryDate,
     createdAt: new Date(),
     updatedAt: new Date(),
     articleJson: entry.article || null, // Assuming article is optional in JournalEntryContent
@@ -171,13 +183,23 @@ export const updateEntryWithMedia = async (input: JournalEntryUpdate) => {
         }
       }
 
+      // Ensure entryDate is properly handled for updates
+      let updateEntryDate: Date;
+      if (input.entryDate instanceof Date) {
+        updateEntryDate = input.entryDate;
+      } else if (typeof input.entryDate === 'string') {
+        updateEntryDate = parseDateStringToUTC(input.entryDate);
+      } else {
+        updateEntryDate = new Date();
+      }
+
       // Update journal entry
       await tx
         .update(journalEntries)
         .set({
           promptQuestion: input.promptQuestion,
           answer: input.answer,
-          entryDate: new Date(input.entryDate),
+          entryDate: updateEntryDate,
           updatedAt: new Date(),
           articleJson: input.article,
         })
@@ -193,9 +215,10 @@ export const updateEntryWithMedia = async (input: JournalEntryUpdate) => {
 export const updateEntrywithReview = async (input: {
   entry: JournalEntry;
   grade: Grade;
+  isAheadCard?: boolean;
 }) => {
-  const { entry, grade } = input;
-  const { card, log } = await reviewEntry(entry, grade);
+  const { entry, grade, isAheadCard = false } = input;
+  const { card, log } = await reviewEntry(entry, grade, isAheadCard);
   console.log("Updating entry with review:", JSON.stringify(entry, null, 2));
   console.log("Card after review:", JSON.stringify(card, null, 2));
 
@@ -242,6 +265,17 @@ export const createArticleEntry = async (article: ArticleData) => {
 export const insertEntries = async (entries: JournalEntryContent[]) => {
   const cards = entries.map((entry) => {
     const card = newCard(entry);
+
+    // Ensure entryDate is properly handled for batch inserts
+    let entryDate: Date;
+    if (entry.entryDate instanceof Date) {
+      entryDate = entry.entryDate;
+    } else if (typeof entry.entryDate === 'string') {
+      entryDate = parseDateStringToUTC(entry.entryDate);
+    } else {
+      entryDate = new Date();
+    }
+
     return {
       due: card.due,
       stability: card.stability,
@@ -253,7 +287,7 @@ export const insertEntries = async (entries: JournalEntryContent[]) => {
       state: "new",
       promptQuestion: entry.promptQuestion,
       answer: entry.answer,
-      entryDate: new Date(entry.entryDate), // Convert to timestamp
+      entryDate: entryDate,
       createdAt: new Date(),
       updatedAt: new Date(),
       articleJson: null, // Assuming article is optional in JournalEntryContent

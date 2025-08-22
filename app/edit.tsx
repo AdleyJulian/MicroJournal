@@ -1,6 +1,5 @@
 import React from "react";
-import { ScrollView } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView, View } from "react-native";
 import { EditCardForm } from "@/components/form/EditCard";
 
 import { useLocalSearchParams } from "expo-router";
@@ -21,14 +20,14 @@ const CreateMemoryScreen: React.FC = () => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <View style={{ flex: 1 }}>
       <ScrollView
         className="px-4"
         contentContainerStyle={{ paddingBottom: 60 }}
       >
         <EditCardForm data={data} />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

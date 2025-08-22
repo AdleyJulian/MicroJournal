@@ -28,6 +28,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
     <DrawerContentScrollView
       {...props}
       className="flex-1 bg-background" // Changed drawer background to semantic
+      contentContainerStyle={{ paddingTop: 0 }}
     >
       <TouchableOpacity
         className="p-4"
@@ -82,7 +83,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
       <DrawerItem
         label="All Feeds"
         onPress={() => {
-          //...
+          router.push("/(tabs)/news");
         }}
         // labelStyle={{ color: "var(--foreground)" }} // Changed DrawerItem label style to use CSS variable for semantic color
       />
@@ -175,6 +176,11 @@ export default function DrawerLayout() {
       screenOptions={{
         drawerIcon: ({ color, size }) => <Menu size={size} color={color} />,
         headerTitle: isSearchVisible ? "" : params.RSSFeed || "All Feeds",
+        headerStyle: {
+          // Remove the automatic safe area padding addition
+          paddingTop: 0,
+        },
+        headerStatusBarHeight: 0, // This prevents automatic status bar height addition
       }}
     >
       <Drawer.Screen
@@ -183,6 +189,7 @@ export default function DrawerLayout() {
           title: "RSS Feeds",
           headerRight: HeaderRight,
         }}
+        
       />
       <Drawer.Screen
         name="manage-feeds"

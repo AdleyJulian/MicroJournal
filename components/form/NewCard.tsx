@@ -25,6 +25,7 @@ import { newEntry } from "@/db/mutations";
 import { router } from "expo-router";
 
 import Toast from "react-native-toast-message";
+import { getTodayUTCString, parseDateStringToUTC } from "@/lib/dateUtils";
 
 // const questions = [
 //   { label: "What was the best part of your day?", value: "best-part" },
@@ -92,6 +93,7 @@ export const NewCardForm: React.FC<ArticleObject> = (props) => {
     // Validate inputs
     try {
       // Prepare the card data
+      const selectedDate = form.getValues("date") || getTodayUTCString();
       const cardData: JournalEntryContent = {
         tags: [],
         article: null,
@@ -99,7 +101,7 @@ export const NewCardForm: React.FC<ArticleObject> = (props) => {
         answer: form.getValues("answer"),
         mediaPath: form.getValues("media")?.mediaPath,
         mediaSourceType: form.getValues("media")?.mediaSourceType,
-        entryDate: new Date(form.getValues("date") || Date.now()),
+        entryDate: parseDateStringToUTC(selectedDate),
       };
 
       // Insert the card into the database
@@ -130,7 +132,7 @@ export const NewCardForm: React.FC<ArticleObject> = (props) => {
   return (
     <Form {...form}>
       <View>
-        <Text className="my-2 text-4xl text-primary font-extrabold tracking-tight">
+        <Text className="mb-2 text-4xl text-primary font-extrabold tracking-tight">
           Create a new memory!
         </Text>
       </View>
@@ -144,8 +146,8 @@ export const NewCardForm: React.FC<ArticleObject> = (props) => {
               <FormDatePicker
                 label="Date of the memory"
                 {...field}
-                value={field.value || new Date().toDateString()}
-                initialDate={new Date().toDateString()}
+                value={field.value || getTodayUTCString()}
+                initialDate={getTodayUTCString()}
               />
             )}
           />

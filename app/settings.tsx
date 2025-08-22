@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { ScrollView, View, Switch } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ImportButton, ExportButton } from "@/components/SettingsComponents";
 
@@ -12,6 +11,7 @@ import {
   ThemeToggle,
   Separator,
   CardFooter,
+  CustomHeader,
 } from "@/components/ui";
 
 
@@ -43,43 +43,44 @@ const Settings: React.FC = () => {
   };
 
   return (
-    <SafeAreaView>
-      <ScrollView className="bg-background">
+    <View className="flex-1 bg-background">
+      <CustomHeader title="Settings" showBackButton={true} />
+      <ScrollView className="flex-1">
         <Card className="m-2 p-2">
           <CardHeader>
             <Text className="text-lg font-semibold">Settings</Text>
           </CardHeader>
           <CardContent>
+          <View className="flex-row justify-between items-center">
+            <Text>Light Mode</Text>
+            <ThemeToggle />
+          </View>
+          <Separator className="my-4" />
+          <View className="flex-1 gap-4 m-4">
+            <ImportButton />
+            <ExportButton />
+          </View>
+          <Separator className="my-4" />
+          <View className="mb-4">
+            <Text className="text-md font-semibold mb-2">Default Cards</Text>
             <View className="flex-row justify-between items-center">
-              <Text>Light Mode</Text>
-              <ThemeToggle />
+              <Text>Enable Daily 'Day of the Week' Card</Text>
+              <Switch
+                trackColor={{ false: "#767577", true: "#81b0ff" }}
+                thumbColor={isDefaultCardsEnabled ? "#f5dd4b" : "#f4f3f4"}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleDefaultCardsSetting}
+                value={isDefaultCardsEnabled}
+              />
             </View>
-            <Separator className="my-4" />
-            <View className="flex-1 gap-4 m-4">
-              <ImportButton />
-              <ExportButton />
-            </View>
-            <Separator className="my-4" />
-            <View className="mb-4">
-              <Text className="text-md font-semibold mb-2">Default Cards</Text>
-              <View className="flex-row justify-between items-center">
-                <Text>Enable Daily 'Day of the Week' Card</Text>
-                <Switch
-                  trackColor={{ false: "#767577", true: "#81b0ff" }}
-                  thumbColor={isDefaultCardsEnabled ? "#f5dd4b" : "#f4f3f4"}
-                  ios_backgroundColor="#3e3e3e"
-                  onValueChange={toggleDefaultCardsSetting}
-                  value={isDefaultCardsEnabled}
-                />
-              </View>
-            </View>
-            <CardFooter>
-              <Text> Version 1.0.0</Text>
-            </CardFooter>
-          </CardContent>
-        </Card>
+          </View>
+          <CardFooter>
+            <Text> Version 1.0.0</Text>
+          </CardFooter>
+        </CardContent>
+      </Card>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 

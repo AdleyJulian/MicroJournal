@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { View, ScrollView } from "react-native";
 import { updateEntrywithReview } from "~/db/mutations";
+import { getDueAndAheadEntries } from "~/db/queries";
 import { getDueEntries } from "~/db/queries";
 import { Button, Card, CardHeader, Text } from "~/components/ui/";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { CustomReviewSection } from "~/components/ui/review-ahead-toggle";
+
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { getPreview } from "~/db/fsrs";
 import { Grade } from "ts-fsrs";
@@ -14,10 +16,12 @@ import { formatInTimeZone } from "date-fns-tz";
 const ReviewScreen = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
+  const [daysAhead, setDaysAhead] = useState(0);
+  const [forgottenDays, setForgottenDays] = useState(0);
 
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ["dueEntries"],
-    queryFn: getDueEntries,
+    queryKey: ["dueEntries", daysAhead],
+    queryFn: () => getDueAndAheadEntries(daysAhead),
     refetchOnWindowFocus: true,
   });
   useRefreshOnFocus(refetch);
@@ -51,7 +55,15 @@ const ReviewScreen = () => {
   const handleGrade = async (grade: Grade) => {
     try {
       const currentEntry = entries[currentIndex];
-      await submitReview({ entry: currentEntry, grade: grade });
+      const currentIsAheadCard = (() => {
+        if (daysAhead === 0) return false; // No ahead cards if daysAhead is 0
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const dueDate = new Date(currentEntry.due);
+        dueDate.setHours(0, 0, 0, 0);
+        return dueDate > today && currentEntry.reps > 0;
+      })();
+      await submitReview({ entry: currentEntry, grade: grade, isAheadCard: currentIsAheadCard });
       setShowAnswer(false);
       refetch();
     } catch (error) {
@@ -70,12 +82,27 @@ const ReviewScreen = () => {
   if (entries.length === 0) {
     return (
       <View className="flex-1 items-center justify-center p-4">
-        <Text className="text-xl text-center mb-4">
-          No entries due for review!
-        </Text>
-        <Text className="text-base text-center text-gray-600">
+        <Text className="text-xl text-center mb-4">No entries due for review!</Text>
+        <Text className="text-base text-center text-gray-600 mb-6">
           Come back later when you have memories to review
         </Text>
+
+        {/* Custom Review Section */}
+        <View className="w-full mb-4">
+          <CustomReviewSection
+            daysAhead={daysAhead}
+            onDaysChange={(days) => {
+              setDaysAhead(days);
+              setCurrentIndex(0); // Reset to first card when changing
+            }}
+            forgottenDays={forgottenDays}
+            onForgottenDaysChange={(days) => {
+              setForgottenDays(days);
+              setCurrentIndex(0); // Reset to first card when changing
+            }}
+          />
+        </View>
+
         <Button onPress={() => refetch()} className="mt-4">
           <Text>Refresh</Text>
         </Button>
@@ -84,13 +111,37 @@ const ReviewScreen = () => {
   }
 
   const currentEntry = orderedEntries[currentIndex];
-  const preview = getPreview(currentEntry);
+
+  // Determine if current card is an ahead card
+  const isAheadCard = (() => {
+    if (daysAhead === 0) return false; // No ahead cards if daysAhead is 0
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const dueDate = new Date(currentEntry.due);
+    dueDate.setHours(0, 0, 0, 0);
+    return dueDate > today && currentEntry.reps > 0;
+  })();
+
+  const preview = getPreview(currentEntry, isAheadCard);
 
   return (
-    <SafeAreaView className="flex-1 m-2">
+    <View className="flex-1 m-2">
       <View className="flex-1">
         {/* <ProgressBar current={currentIndex} total={orderedEntries.length} /> */}
+
+        {/* Review Ahead Toggle (commented out) */}
+        {/* <View className="mb-4">
+          <ReviewAheadToggle
+            isEnabled={includeAhead}
+            onToggle={(enabled) => {
+              setIncludeAhead(enabled);
+              setCurrentIndex(0); // Reset to first card when toggling
+            }}
+          />
+        </View> */}
+
         <StateCount statesCount={statesCount} />
+
         {/* Entry date and stats */}
         <View className="px-4 py-2 border-b ">
           <View className="flex-row items-center justify-between">
@@ -134,11 +185,13 @@ const ReviewScreen = () => {
         </ScrollView>
 
         {/* Review buttons */}
-        {showAnswer && (
-          <RatingButtons handleGrade={handleGrade} preview={preview} />
-        )}
+        <RatingButtons
+          handleGrade={handleGrade}
+          preview={preview}
+          showAnswer={showAnswer}
+        />
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

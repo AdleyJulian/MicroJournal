@@ -3,9 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import * as queries from "@/db/queries";
 import { Text } from "@/components/ui";
 import { type JournalEntry, type MediaAttachment } from "@/db/schema/schema";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useRefreshOnFocus } from "@/hooks/useRefreshOnFocus";
 import { CalendarWithAgenda } from "@/components/AgendaView";
+import { View } from "react-native";
 
 // Define the type for our joined data structure
 type JoinedEntry = {
@@ -117,23 +117,23 @@ export default function ExploreScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-background">
+      <View className="flex-1 items-center justify-center bg-background">
         <Text>Loading memories...</Text>
-      </SafeAreaView>
+      </View>
     );
   }
 
   if (error || !data) {
     return (
-      <SafeAreaView className="flex-1 items-center justify-center bg-background">
+      <View className="flex-1 items-center justify-center bg-background">
         <Text className="text-destructive">Error loading memories</Text>
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView className="flex-1">
+    <View className="flex-1">
       <CalendarWithAgenda agendaItems={data} refetch={refetch} />
-    </SafeAreaView>
+    </View>
   );
 }
