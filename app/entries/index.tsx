@@ -5,6 +5,7 @@ import * as mutations from "@/db/mutations";
 import { Text } from "@/components/ui";
 import { ScrollView } from "react-native-gesture-handler";
 import { View } from "react-native";
+import CustomHeader from "@/components/ui/CustomHeader";
 import {
   EntryHeader,
   MediaSection,
@@ -32,6 +33,7 @@ export default function JournalEntryScreen() {
 
   return (
     <View className="flex-1 bg-background">
+      <CustomHeader title="Entry" showBackButton={true} />
       <ScrollView className="flex-1">
         <EntryHeader entry={data.journal_cards} isLoading={isLoading} />
         {/* <EntryContent entry={data.journal_cards} isLoading={isLoading} /> */}

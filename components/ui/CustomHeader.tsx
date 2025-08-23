@@ -13,11 +13,6 @@ export default function CustomHeader({ title, showBackButton = true }: CustomHea
   const insets = useSafeAreaInsets();
   const router = useRouter();
 
-  // Debug logging to see what insets we're getting
-  React.useEffect(() => {
-    console.log('CustomHeader insets:', insets);
-  }, [insets]);
-
   const handleBack = () => {
     router.back();
   };
@@ -26,7 +21,7 @@ export default function CustomHeader({ title, showBackButton = true }: CustomHea
     <View
       className="bg-background border-b border-border"
       style={{
-        paddingTop: insets.top,
+        paddingTop: insets.top + 8, // Add extra padding for better spacing
         ...Platform.select({
           ios: {
             shadowColor: '#000',
@@ -40,7 +35,7 @@ export default function CustomHeader({ title, showBackButton = true }: CustomHea
         }),
       }}
     >
-      <View className="flex-row items-center px-4 min-h-[44px]">
+      <View className="flex-row items-center px-4 py-3">
         {showBackButton && (
           <Pressable
             onPress={handleBack}
