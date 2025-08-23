@@ -134,9 +134,9 @@ docs/
 ⚠️ **IMPORTANT**: Before final submission, update these placeholder contact details:
 
 ### Files to Update:
-- `docs/store-listing-content.md` - Replace TODO placeholders with real info
-- `docs/privacy-policy/final-policy.md` - Update contact email
-- `docs/legal/terms-of-service.md` - Update contact email
+- `docs/store-listing-content.md` - ✅ Updated with real contact info
+- `docs/privacy-policy/final-policy.md` - ✅ Updated to pensieve.journal@proton.me
+- `docs/legal/terms-of-service.md` - ✅ Updated to pensieve.journal@proton.me
 
 ### Required Contact Info:
 - **Real Email Address**: Replace `pensieve.app@proton.me`

@@ -275,8 +275,8 @@ For questions about this submission plan:
 
 ### Files Requiring Updates:
 - `docs/store-listing-content.md` - Replace TODO placeholders in store listing
-- `docs/privacy-policy/final-policy.md` - Update contact email (currently: pensieve.app@proton.me)
-- `docs/legal/terms-of-service.md` - Update contact email (currently: pensieve.app@proton.me)
+- `docs/privacy-policy/final-policy.md` - ✅ Updated to pensieve.journal@proton.me
+- `docs/legal/terms-of-service.md` - ✅ Updated to pensieve.journal@proton.me
 
 ### Required Real Information:
 - **Valid Email Address** - Replace placeholder email

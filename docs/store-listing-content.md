@@ -145,10 +145,10 @@ memory enhancement, spaced repetition, journaling, personal knowledge, FSRS, stu
 ## 📞 Contact Information
 
 ### Store Listing Contact
-- **Email**: [TODO - Add your email]
-- **Website**: [TODO - Add your website URL]
-- **Privacy Policy**: [TODO - Add privacy policy URL]
-- **Terms of Service**: [TODO - Add terms of service URL]
+- **Email**: pensieve.journal@proton.me
+- **Website**: https://adleyjulian.github.io/MicroJournal/
+- **Privacy Policy**: https://adleyjulian.github.io/MicroJournal/privacy-policy.html
+- **Terms of Service**: https://adleyjulian.github.io/MicroJournal/terms-of-service.html
 
 ---
 

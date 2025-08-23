@@ -3,8 +3,7 @@
 **Last Updated**: December 19, 2024
 **Effective Date**: December 19, 2024
 
-**⚠️ TODO: Update contact information below before publishing!**
-**Current email (pensieve.app@proton.me) is a placeholder - replace with real contact info**
+
 
 ## 1. Acceptance of Terms
 
@@ -139,8 +138,8 @@ You agree not to create, upload, or share content that:
 ## 11. Contact Information
 
 If you have questions about these Terms, please contact us at:
-- Email: pensieve.app@proton.me
-- Website: https://pensieve-app.github.io/terms-of-service
+- Email: pensieve.journal@proton.me
+- Website: https://adleyjulian.github.io/MicroJournal/terms-of-service.html
 - Support: Open an issue on our GitHub repository
 
 ## 12. Entire Agreement
