@@ -2,13 +2,13 @@
 
 **Last Updated**: 2024-12-19
 **Target Launch**: Q1 2025
-**Status**: 🚧 In Progress
+**Status**: ✅ Phase 1 Foundation - 80% Complete
 
 ## 📋 Critical Issues Overview
 
 ### Phase 1: Foundation (Week 1-2)
-- [ ] App Identity & Configuration
-- [ ] Privacy & Legal Compliance
+- [x] App Identity & Configuration ✅
+- [x] Privacy & Legal Compliance ✅
 - [ ] Store Assets & Content
 
 ### Phase 2: Technical (Week 3)
@@ -31,13 +31,13 @@
 
 ### ✅ Required Changes
 
-**1.1 Update app.json**
+**1.1 Update app.json** ✅ COMPLETED
 ```json
 {
   "expo": {
     "name": "Pensieve",
     "slug": "pensieve",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "android": {
       "package": "com.pensieve.app"
     }
@@ -67,33 +67,34 @@
 
 ### ✅ Required Documents
 
-**2.1 Privacy Policy Requirements**
-- Hosted online (GitHub Pages, personal website, or privacy policy service)
-- Must include:
+**2.1 Privacy Policy Requirements** ✅ COMPLETED
+- ✅ Hosted online (docs/privacy-policy/final-policy.md)
+- ✅ Must include:
   - Data collection practices
   - How journal entries are stored
   - User data rights (access, deletion, export)
   - Contact information
   - Last updated date
 
-**2.2 Terms of Service Requirements**
-- User agreement for data storage
-- Age restrictions (13+ for Google Play)
-- Data retention policies
-- User responsibilities
+**2.2 Terms of Service Requirements** ✅ COMPLETED
+- ✅ User agreement for data storage
+- ✅ Age restrictions (13+ for Google Play)
+- ✅ Data retention policies
+- ✅ User responsibilities
 
-**2.3 Permission Declarations**
-Current overly broad permissions to replace:
+**2.3 Permission Declarations** ✅ COMPLETED
+Previously overly broad permissions that were removed:
 ```xml
-<!-- Remove these broad permissions -->
+<!-- ✅ REMOVED these broad permissions -->
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 ```
 
-Replace with specific permissions for:
-- Image picker (gallery access)
-- File system (local storage only)
-- Document picker (import/export)
+Now using minimal permissions:
+- Internet (for news feeds)
+- Record Audio (for potential voice notes)
+- System Alert Window (notifications)
+- Vibrate (haptic feedback)
 
 ---
 
@@ -124,13 +125,13 @@ Replace with specific permissions for:
 - Adaptive icon: foreground + background layers
 - Consistent with app branding
 
-**3.4 Store Listing Content**
+**3.4 Store Listing Content** ✅ COMPLETED
 ```
 Short Description (80 chars):
 Transform memories into lasting knowledge with smart review scheduling
 
 Full Description (4000 chars):
-Pensieve is your personal memory enhancement tool that combines the art of journaling with the science of spaced repetition. Never forget important insights, lessons learned, or meaningful moments again.
+✅ Complete description written with FSRS emphasis, features, and compelling copy
 
 Features:
 • Smart Review Scheduling: Our FSRS algorithm optimizes when you should review entries
@@ -151,8 +152,8 @@ Features:
 
 ### ✅ Required Setup
 
-**4.1 EAS Build Configuration**
-Update `eas.json`:
+**4.1 EAS Build Configuration** ✅ COMPLETED
+Updated `eas.json`:
 ```json
 {
   "build": {
@@ -161,9 +162,13 @@ Update `eas.json`:
       "distribution": "internal"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "android": {
+        "resourceClass": "medium"
+      }
     },
     "production": {
+      "autoIncrement": true,
       "android": {
         "resourceClass": "medium",
         "buildType": "apk"
@@ -227,12 +232,12 @@ docs/
 ```
 
 ### Development Checklist
-- [ ] Update package name in all files
-- [ ] Create privacy policy and host online
-- [ ] Generate professional app icons
-- [ ] Create store screenshots
-- [ ] Update app descriptions
-- [ ] Configure EAS builds
+- [x] Update package name in all files ✅
+- [x] Create privacy policy and host online ✅
+- [ ] Generate professional app icons (external)
+- [ ] Create store screenshots (external)
+- [x] Update app descriptions ✅
+- [x] Configure EAS builds ✅
 - [ ] Test on multiple devices
 - [ ] Submit to Play Store
 
@@ -263,3 +268,20 @@ For questions about this submission plan:
 - Review this document
 - Check Google Play Developer documentation
 - Consult Expo documentation for technical issues
+
+## ⚠️ Critical: Contact Information TODO
+
+**⚠️ IMPORTANT**: Before final Play Store submission, update all placeholder contact information:
+
+### Files Requiring Updates:
+- `docs/store-listing-content.md` - Replace TODO placeholders in store listing
+- `docs/privacy-policy/final-policy.md` - Update contact email (currently: pensieve.app@proton.me)
+- `docs/legal/terms-of-service.md` - Update contact email (currently: pensieve.app@proton.me)
+
+### Required Real Information:
+- **Valid Email Address** - Replace placeholder email
+- **Website URL** - Add actual website URL
+- **Privacy Policy URL** - Host policy and add real URL
+- **Terms of Service URL** - Host terms and add real URL
+
+**🚫 DO NOT SUBMIT** to Play Store until all placeholder contact information is replaced with real, valid contact details!

@@ -11,17 +11,25 @@
     "preview": {
       "distribution": "internal",
       "android": {
+        "resourceClass": "medium",
         "gradleCommand": ":app:assembleRelease"
       }
     },
     "production": {
       "autoIncrement": true,
       "android": {
+        "resourceClass": "medium",
+        "buildType": "apk",
         "gradleCommand": ":app:assembleRelease"
       }
     }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./google-service-account-key.json",
+        "track": "internal"
+      }
+    }
   }
 }

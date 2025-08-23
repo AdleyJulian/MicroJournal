@@ -1,16 +1,16 @@
 {
   "expo": {
     "name": "Pensieve",
-    "slug": "MicroJournal",
+    "slug": "pensieve",
     "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/images/icons/adaptive-icon.png",
-    "scheme": "myapp",
+    "scheme": "pensieve",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.microjournal",
+      "bundleIdentifier": "com.pensieve.app",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/images/icons/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.microjournal"
+      "package": "com.pensieve.app"
     },
     "web": {
       "bundler": "metro",
