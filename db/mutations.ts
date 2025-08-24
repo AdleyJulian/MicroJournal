@@ -3,7 +3,9 @@ import {
   journalEntries,
   type JournalEntry,
   mediaAttachments,
-} from "@/db/schema/schema"; // Import mediaAttachments
+  tags,
+  entryTags,
+} from "@/db/schema/schema"; // Import mediaAttachments, tags, and entryTags
 import { desc, eq, and, sql } from "drizzle-orm";
 import {
   JournalEntryContent,
@@ -264,7 +266,32 @@ export const createArticleEntry = async (article: ArticleData) => {
 
 export const insertEntries = async (entries: JournalEntryContent[]) => {
   const cards = entries.map((entry) => {
-    const card = newCard(entry);
+    // Check if this is an ImportEntry with FSRS data
+    const isImportEntry = 'due' in entry || 'stability' in entry || 'state' in entry;
+
+    let card;
+    if (isImportEntry) {
+      // Use imported FSRS values if available, otherwise create new card
+      card = {
+        due: 'due' in entry && entry.due ?
+          (entry.due instanceof Date ? entry.due : new Date(entry.due)) :
+          newCard(entry).due,
+        stability: 'stability' in entry ? entry.stability! : newCard(entry).stability,
+        difficulty: 'difficulty' in entry ? entry.difficulty! : newCard(entry).difficulty,
+        elapsedDays: 'elapsedDays' in entry ? entry.elapsedDays! : 0,
+        scheduledDays: 'scheduledDays' in entry ? entry.scheduledDays! : 0,
+        reps: 'reps' in entry ? entry.reps! : newCard(entry).reps,
+        lapses: 'lapses' in entry ? entry.lapses! : newCard(entry).lapses,
+        state: 'state' in entry ? entry.state! : "new",
+        lastReview: 'lastReview' in entry && entry.lastReview ?
+          (entry.lastReview instanceof Date ? entry.lastReview : new Date(entry.lastReview)) :
+          null,
+        cardType: 'cardType' in entry ? entry.cardType! : "user",
+      };
+    } else {
+      // Create new card with default FSRS values
+      card = newCard(entry);
+    }
 
     // Ensure entryDate is properly handled for batch inserts
     let entryDate: Date;
@@ -276,26 +303,72 @@ export const insertEntries = async (entries: JournalEntryContent[]) => {
       entryDate = new Date();
     }
 
+    // Handle createdAt and updatedAt
+    const createdAt = 'createdAt' in entry && entry.createdAt ?
+      (entry.createdAt instanceof Date ? entry.createdAt : new Date(entry.createdAt)) :
+      new Date();
+
+    const updatedAt = 'updatedAt' in entry && entry.updatedAt ?
+      (entry.updatedAt instanceof Date ? entry.updatedAt : new Date(entry.updatedAt)) :
+      new Date();
+
     return {
       due: card.due,
       stability: card.stability,
       difficulty: card.difficulty,
-      elapsedDays: 0,
-      scheduledDays: 0,
+      elapsedDays: card.elapsedDays,
+      scheduledDays: card.scheduledDays,
       reps: card.reps,
       lapses: card.lapses,
-      state: "new",
+      state: card.state,
+      lastReview: card.lastReview,
+      cardType: card.cardType,
       promptQuestion: entry.promptQuestion,
       answer: entry.answer,
       entryDate: entryDate,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      articleJson: null, // Assuming article is optional in JournalEntryContent
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      articleJson: 'article' in entry ? entry.article : null,
     };
   });
 
   try {
-    await db.insert(journalEntries).values(cards).run();
+    const insertedEntries = await db.insert(journalEntries).values(cards).returning({ id: journalEntries.id });
+
+    // Handle tags if present
+    for (let i = 0; i < entries.length; i++) {
+      const entry = entries[i];
+      const insertedEntry = insertedEntries[i];
+
+      if ('tags' in entry && entry.tags && entry.tags.length > 0) {
+        // Insert tags and create relationships
+        for (const tagName of entry.tags) {
+          // Check if tag exists, create if not
+          let tag = await db.select().from(tags).where(eq(tags.name, tagName)).get();
+          if (!tag) {
+            [tag] = await db.insert(tags).values({ name: tagName }).returning();
+          }
+
+          // Create entry-tag relationship
+          if (tag) {
+            await db.insert(entryTags).values({
+              entryId: insertedEntry.id,
+              tagId: tag.name
+            }).run();
+          }
+        }
+      }
+
+      // Handle media attachments if present
+      if ('mediaPath' in entry && 'mediaSourceType' in entry && entry.mediaPath && entry.mediaSourceType) {
+        await db.insert(mediaAttachments).values({
+          entryId: insertedEntry.id,
+          mediaPath: entry.mediaPath,
+          mediaSourceType: entry.mediaSourceType,
+          type: "image"
+        }).run();
+      }
+    }
   } catch (error) {
     console.error("Error inserting entries:", error);
   }

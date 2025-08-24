@@ -1,20 +1,15 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { MoonStar } from "~/lib/icons/MoonStar";
 import { Sun } from "~/lib/icons/Sun";
-import { useColorScheme } from "~/lib/useColorScheme";
+import { useThemePersistence } from "~/hooks/useThemePersistence";
 import { cn } from "~/lib/utils";
 import { Button } from "@/components/ui/";
 
 export function ThemeToggle() {
-  const { isDarkColorScheme, setColorScheme } = useColorScheme();
+  const { isDarkColorScheme, setTheme } = useThemePersistence();
 
   type Theme = "light" | "dark";
   const toggleTheme = (theme: Theme) => {
-    setColorScheme(theme);
-    setAndroidNavigationBar(theme);
-    AsyncStorage.setItem("theme", theme);
-    console.log("Theme set to", theme);
+    setTheme(theme);
   };
 
   if (!isDarkColorScheme) {

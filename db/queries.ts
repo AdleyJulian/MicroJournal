@@ -5,7 +5,7 @@ import {
   entryTags,
   mediaAttachments,
 } from "@/db/schema/schema";
-import { desc, eq, lte, count, and, gte } from "drizzle-orm";
+import { desc, eq, lte, count, and, gte, sql } from "drizzle-orm";
 import { type JournalEntry, type MediaAttachment } from "@/db/schema/schema";
 import { formatDateToUTCString } from "@/lib/dateUtils";
 
@@ -175,3 +175,139 @@ export async function getEntriesByTag(tagName: string) {
 
   return entriesWithTag;
 }
+
+/**
+ * Get the count of entries due for review (including new cards)
+ */
+export const getDueEntriesCount = async (): Promise<number> => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Start of the day
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const result = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(journalEntries)
+      .where(lte(journalEntries.due, tomorrow));
+
+    return result[0]?.count || 0;
+  } catch (error) {
+    console.error('Error getting due entries count:', error);
+    return 0;
+  }
+};
+
+/**
+ * Get count of cards available for review at different time points
+ */
+export const getCardCountsByDays = async (maxDays: number = 30): Promise<{ days: number; count: number; }[]> => {
+  const result: { days: number; count: number; }[] = [];
+
+  for (let days = 0; days <= maxDays; days++) {
+    const targetDate = new Date();
+    targetDate.setHours(0, 0, 0, 0);
+    targetDate.setDate(targetDate.getDate() + days);
+
+    const nextDay = new Date(targetDate);
+    nextDay.setDate(nextDay.getDate() + 1);
+
+    const count = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(journalEntries)
+      .where(
+        and(
+          lte(journalEntries.due, nextDay),
+          gte(journalEntries.reps, days === 0 ? 0 : 1) // Include new cards only for day 0
+        )
+      );
+
+    result.push({
+      days,
+      count: count[0]?.count || 0
+    });
+  }
+
+  return result;
+};
+
+/**
+ * Get count of forgotten cards from the last N days
+ */
+export const getForgottenCardCounts = async (maxDays: number = 30): Promise<{ days: number; count: number; }[]> => {
+  const result: { days: number; count: number; }[] = [];
+
+  for (let days = 0; days <= maxDays; days++) {
+    const targetDate = new Date();
+    targetDate.setHours(0, 0, 0, 0);
+    targetDate.setDate(targetDate.getDate() - days);
+
+    const count = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(journalEntries)
+      .where(
+        and(
+          gte(journalEntries.lastReview, targetDate),
+          gte(journalEntries.lapses, 1), // Cards that have been forgotten at least once
+          eq(journalEntries.state, "3") // Currently in relearning state (forgotten)
+        )
+      );
+
+    result.push({
+      days,
+      count: count[0]?.count || 0
+    });
+  }
+
+  return result;
+};
+
+/**
+ * Get total count of cards that would be included with specific review parameters
+ */
+export const getReviewSessionCardCount = async (daysAhead: number, forgottenDays: number): Promise<{
+  totalCards: number;
+  regularCards: number;
+  forgottenCards: number;
+}> => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // Regular cards (due today + ahead if specified)
+  const reviewEndDate = new Date(today);
+  reviewEndDate.setDate(reviewEndDate.getDate() + daysAhead + 1); // +1 to include the end date
+
+  const regularCardsResult = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(journalEntries)
+    .where(
+      and(
+        lte(journalEntries.due, reviewEndDate),
+        gte(journalEntries.reps, daysAhead === 0 ? 0 : 1)
+      )
+    );
+
+  // Forgotten cards (from the last forgottenDays)
+  const forgottenStartDate = new Date(today);
+  forgottenStartDate.setDate(forgottenStartDate.getDate() - forgottenDays);
+
+  const forgottenCardsResult = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(journalEntries)
+    .where(
+      and(
+        gte(journalEntries.lastReview, forgottenStartDate),
+        gte(journalEntries.lapses, 1),
+        eq(journalEntries.state, "3")
+      )
+    );
+
+  const regularCards = regularCardsResult[0]?.count || 0;
+  const forgottenCards = forgottenCardsResult[0]?.count || 0;
+
+  return {
+    totalCards: regularCards + forgottenCards,
+    regularCards,
+    forgottenCards
+  };
+};

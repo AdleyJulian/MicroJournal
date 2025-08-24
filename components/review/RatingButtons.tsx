@@ -76,8 +76,8 @@ export const RatingButtons = ({
           className={`${config.color} flex-1 mx-1 py-3 px-2 rounded-lg shadow-sm`}
         >
           <View className="items-center">
-            <Text className="text-white font-bold text-sm">{config.label}</Text>
-            <Text className="text-white text-xs opacity-95 font-medium">
+            <Text className="text-primary-foreground font-bold text-sm">{config.label}</Text>
+            <Text className="text-primary-foreground text-xs opacity-95 font-medium">
               {preview && preview[config.rating] ? formatTimeUntilReview(preview[config.rating].card.due) : ''}
             </Text>
           </View>

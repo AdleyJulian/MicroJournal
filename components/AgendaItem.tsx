@@ -8,6 +8,9 @@ import { Link } from "expo-router";
 
 export const AgendaItem = memo(
   ({ item }: { item: JournalEntry }) => {
+
+    const answerLimit = 180;
+    const truncatedAnswer = item.answer ? item.answer.length > answerLimit ? item.answer.slice(0, answerLimit) + "..." : item.answer : "No entry";
     return (
       <Link asChild href={{ pathname: "/entries", params: { id: item.id } }}>
         <Pressable
@@ -24,7 +27,7 @@ export const AgendaItem = memo(
                 {item.promptQuestion || "No question provided"}
               </Text>
               <Text className="text-sm text-gray-600 dark:text-gray-300">
-                {item.answer || "No answer provided"}
+                {truncatedAnswer }
               </Text>
             </View>
           </View>

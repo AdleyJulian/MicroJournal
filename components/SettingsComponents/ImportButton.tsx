@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from "~/components/ui/dialog";
 import { Text } from "~/components/ui/text";
+import { Plus } from "~/lib/icons";
 import Toast, { ToastPosition } from "react-native-toast-message";
 import { ImportSchema } from "@/db/schema/types";
 import JSON5 from "json5";
@@ -80,13 +81,37 @@ export function ImportButton() {
         const jsonData = JSON5.parse(contents);
 
         const validEntries = jsonData.filter(
-          (entry: any) => ImportSchema.safeParse(entry).success
+          (entry: any) => {
+            const result = ImportSchema.safeParse(entry);
+            if (!result.success) {
+              console.warn("Invalid entry skipped:", entry, result.error.issues);
+            }
+            return result.success;
+          }
         );
 
-        const convertedImport = validEntries.map((entry: any) => ({
-          ...entry,
-          entryDate: new Date(entry.entryDate),
-        }));
+        const convertedImport = validEntries.map((entry: any) => {
+          // Convert date strings to Date objects
+          const convertedEntry = { ...entry };
+
+          if (typeof entry.entryDate === 'string') {
+            convertedEntry.entryDate = new Date(entry.entryDate);
+          }
+          if (entry.due && typeof entry.due === 'string') {
+            convertedEntry.due = new Date(entry.due);
+          }
+          if (entry.lastReview && typeof entry.lastReview === 'string') {
+            convertedEntry.lastReview = new Date(entry.lastReview);
+          }
+          if (entry.createdAt && typeof entry.createdAt === 'string') {
+            convertedEntry.createdAt = new Date(entry.createdAt);
+          }
+          if (entry.updatedAt && typeof entry.updatedAt === 'string') {
+            convertedEntry.updatedAt = new Date(entry.updatedAt);
+          }
+
+          return convertedEntry;
+        });
         mutation.mutate(convertedImport);
       }
     } catch (error) {
@@ -100,13 +125,37 @@ export function ImportButton() {
     try {
       const jsonData = JSON5.parse(textAreaValue);
       const validEntries = jsonData.filter(
-        (entry: any) => ImportSchema.safeParse(entry).success
+        (entry: any) => {
+          const result = ImportSchema.safeParse(entry);
+          if (!result.success) {
+            console.warn("Invalid entry skipped:", entry, result.error.issues);
+          }
+          return result.success;
+        }
       );
 
-      const convertedImport = validEntries.map((entry: any) => ({
-        ...entry,
-        entryDate: new Date(entry.entryDate),
-      }));
+      const convertedImport = validEntries.map((entry: any) => {
+        // Convert date strings to Date objects
+        const convertedEntry = { ...entry };
+
+        if (typeof entry.entryDate === 'string') {
+          convertedEntry.entryDate = new Date(entry.entryDate);
+        }
+        if (entry.due && typeof entry.due === 'string') {
+          convertedEntry.due = new Date(entry.due);
+        }
+        if (entry.lastReview && typeof entry.lastReview === 'string') {
+          convertedEntry.lastReview = new Date(entry.lastReview);
+        }
+        if (entry.createdAt && typeof entry.createdAt === 'string') {
+          convertedEntry.createdAt = new Date(entry.createdAt);
+        }
+        if (entry.updatedAt && typeof entry.updatedAt === 'string') {
+          convertedEntry.updatedAt = new Date(entry.updatedAt);
+        }
+
+        return convertedEntry;
+      });
 
       mutation.mutate(convertedImport);
       setTextAreaValue(""); // Clear the textarea after submission
@@ -119,7 +168,8 @@ export function ImportButton() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>
+        <Button className="flex-row items-center gap-2">
+          <Plus className="w-4 h-4 text-background" />
           <Text>Import Cards</Text>
         </Button>
       </DialogTrigger>
@@ -127,9 +177,23 @@ export function ImportButton() {
         <DialogHeader>
           <DialogTitle>Import Cards</DialogTitle>
           <DialogDescription>
-            Please provide input as a JSON file with the format: [&#123;
-            "promptQuestion": "...", "answer": "...", "entryDate": "YYYY-MM-DD"
-            &#125;, ...]
+            Import cards with full details. Basic format: [&#123;"promptQuestion": "...", "answer": "...", "entryDate": "YYYY-MM-DD"&#125;, ...]
+            {"\n\n"}
+            Advanced format supports: FSRS state (stability, difficulty, due date, current state), tags, articles, media, and metadata.
+            {"\n\n"}
+            Example:
+            {"\n"}&#123;
+            {"\n"}  "promptQuestion": "What was the main event today?",
+            {"\n"}  "answer": "I learned about spaced repetition",
+            {"\n"}  "entryDate": "2024-01-15",
+            {"\n"}  "stability": 2.5,
+            {"\n"}  "difficulty": 1.8,
+            {"\n"}  "state": "review",
+            {"\n"}  "due": "2024-01-20",
+            {"\n"}  "reps": 3,
+            {"\n"}  "tags": ["learning", "spaced-repetition"],
+            {"\n"}  "cardType": "user"
+            {"\n"}&#125;
           </DialogDescription>
         </DialogHeader>
         <Button onPress={handleImport} disabled={isLoading}>

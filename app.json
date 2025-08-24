@@ -43,7 +43,8 @@
         }
       ],
       "expo-sqlite",
-      "expo-document-picker"
+      "expo-document-picker",
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true
@@ -53,7 +54,7 @@
         "origin": false
       },
       "eas": {
-        "projectId": "b2b3c9e1-a692-4af4-911d-f581cae53d1d"
+        "projectId": "b0526d2c-3052-4dd1-b08c-3043cb463267"
       }
     }
   }

@@ -13,7 +13,7 @@ import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
 import { NAV_THEME } from "~/lib/constants";
-import { useColorScheme } from "~/lib/useColorScheme";
+import { useThemePersistence } from "~/hooks/useThemePersistence";
 import { DatabaseProvider } from "~/db/provider";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -23,6 +23,7 @@ import { RSSFeedProvider } from "@/contexts/RSSFeedContext"; // Import your feed
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PortalHost } from "@rn-primitives/portal";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import NotificationHandler from "@/components/NotificationHandler";
 
 const queryClient = new QueryClient();
 
@@ -44,20 +45,7 @@ export {
 // SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const hasMounted = React.useRef(false);
-  const { colorScheme, isDarkColorScheme } = useColorScheme();
-  const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
-
-  React.useEffect(() => {
-    if (hasMounted.current) {
-      return;
-    }
-
-    setIsColorSchemeLoaded(true);
-    hasMounted.current = true;
-    console.log("Color scheme loaded");
-    console.log("RootLayout: SafeAreaProvider initialized");
-  }, []);
+  const { colorScheme, isDarkColorScheme, isThemeLoaded } = useThemePersistence();
 
   return (
     <SafeAreaProvider
@@ -67,6 +55,7 @@ export default function RootLayout() {
         insets: { top: 0, left: 0, right: 0, bottom: 0 },
       }}
     >
+      <NotificationHandler />
       <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
         <DatabaseProvider>
           <QueryClientProvider client={queryClient}>
@@ -82,7 +71,7 @@ export default function RootLayout() {
                       cacheTimeout: 30, // 30 minutes
                     }}
                   >
-                    {isColorSchemeLoaded ? (
+                    {isThemeLoaded ? (
                       <Stack>
                         <Stack.Screen
                           name="(tabs)"
@@ -112,15 +101,7 @@ export default function RootLayout() {
                           name="edit"
                           options={{
                             title: "Edit",
-                            headerShown: true,
-                            headerStyle: {
-                              backgroundColor: isDarkColorScheme ? '#1C1C1E' : '#FFFFFF',
-                            },
-                            headerTintColor: isDarkColorScheme ? '#FFFFFF' : '#000000',
-                            headerTitleStyle: {
-                              fontWeight: '600',
-                            },
-                            headerTransparent: false,
+                            headerShown: false,
                           }}
                         />
                       </Stack>

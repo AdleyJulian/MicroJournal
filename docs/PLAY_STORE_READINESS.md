@@ -2,7 +2,7 @@
 
 **Last Updated**: 2024-12-19
 **Target Launch**: Q1 2025
-**Status**: ✅ Phase 1 Foundation - 80% Complete
+**Status**: ✅ Phase 1 Foundation - 85% Complete
 
 ## 📋 Critical Issues Overview
 
@@ -114,11 +114,12 @@ Now using minimal permissions:
 - Dark/Light mode examples
 - Sizes: 320px-3840px width, 16:9 aspect ratio
 
-**3.2 Feature Graphic**
+**3.2 Feature Graphic** ✅ COMPLETED
 - Size: 1024x500px
 - Pensieve-themed design
 - Tagline: "Your Personal Memory Vault"
 - Show spaced repetition concept
+- Located: docs/screenshots/Feature graphics.png
 
 **3.3 App Icon (High Quality)**
 - Main icon: 512x512px

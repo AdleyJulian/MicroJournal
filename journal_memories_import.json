@@ -1,0 +1,932 @@
+[
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Finally solved the React Native navigation bug that had been frustrating me for weeks.",
+    "entryDate": "2025-07-01"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Explored the new botanical gardens downtown - the butterfly exhibit was mesmerizing.",
+    "entryDate": "2025-07-01"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Refactored the user authentication system to use JWT tokens instead of sessions.",
+    "entryDate": "2025-07-01"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Had a breakthrough on my personal project - the algorithm finally works correctly!",
+    "entryDate": "2025-07-02"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Finished 'The Psychology of Money' by Morgan Housel - eye-opening insights on investing.",
+    "entryDate": "2025-07-02"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Connected with Sarah, a UX designer from the local meetup group.",
+    "entryDate": "2025-07-02"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Morning coffee at the new café with perfect almond croissants.",
+    "entryDate": "2025-07-03"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Visited the historic district - discovered a 100-year-old bookstore.",
+    "entryDate": "2025-07-03"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Implemented dark mode toggle with smooth animations across the entire app.",
+    "entryDate": "2025-07-03"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Completed my first 5K run without stopping - felt amazing!",
+    "entryDate": "2025-07-04"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Watched 'The Social Dilemma' documentary - changed my perspective on social media.",
+    "entryDate": "2025-07-04"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Alex, a data scientist passionate about machine learning ethics.",
+    "entryDate": "2025-07-04"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Successfully deployed the new feature to production without any issues.",
+    "entryDate": "2025-07-05"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Hiked to the top of Eagle Peak - breathtaking panoramic views.",
+    "entryDate": "2025-07-05"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Optimized database queries, reduced load time by 40%.",
+    "entryDate": "2025-07-05"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Received positive feedback from users on the new feature implementation.",
+    "entryDate": "2025-07-06"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Read 'Atomic Habits' by James Clear - transforming my daily routines.",
+    "entryDate": "2025-07-06"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Connected with Jordan, a product manager with innovative ideas.",
+    "entryDate": "2025-07-06"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Perfect weather for outdoor work - coded in the park all afternoon.",
+    "entryDate": "2025-07-07"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Stumbled upon an art gallery featuring local emerging artists.",
+    "entryDate": "2025-07-07"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Built a custom analytics dashboard using Chart.js and React.",
+    "entryDate": "2025-07-07"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Fixed a critical bug that had been affecting user experience.",
+    "entryDate": "2025-07-08"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Watched TED Talk on creativity and problem-solving techniques.",
+    "entryDate": "2025-07-08"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Taylor, a creative director with unique design perspectives.",
+    "entryDate": "2025-07-08"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Successfully presented my project to the team - everyone was impressed.",
+    "entryDate": "2025-07-09"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Explored the university library - found rare programming books.",
+    "entryDate": "2025-07-09"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Redesigned the user interface for better accessibility and usability.",
+    "entryDate": "2025-07-09"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Completed a challenging coding interview with confidence.",
+    "entryDate": "2025-07-10"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Read 'Clean Code' by Robert Martin - revolutionized my coding practices.",
+    "entryDate": "2025-07-10"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Connected with Casey, a full-stack developer with 10 years experience.",
+    "entryDate": "2025-07-10"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Finally mastered CSS Grid layout after weeks of practice.",
+    "entryDate": "2025-07-11"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Visited the science museum - interactive exhibits were fascinating.",
+    "entryDate": "2025-07-11"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Implemented real-time notifications using WebSocket technology.",
+    "entryDate": "2025-07-11"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Received a promotion and salary increase at work!",
+    "entryDate": "2025-07-12"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Watched 'The Great Hack' - eye-opening about data privacy.",
+    "entryDate": "2025-07-12"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Riley, a cybersecurity expert with valuable insights.",
+    "entryDate": "2025-07-12"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Perfect sunset while walking home from work.",
+    "entryDate": "2025-07-13"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Discovered a hidden coffee shop with amazing pour-over coffee.",
+    "entryDate": "2025-07-13"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Created automated testing suite using Jest and React Testing Library.",
+    "entryDate": "2025-07-13"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Collaborated with a talented designer on a beautiful project.",
+    "entryDate": "2025-07-14"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Read 'Sapiens' by Yuval Noah Harari - mind-expanding historical perspective.",
+    "entryDate": "2025-07-14"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Connected with Morgan, a freelance illustrator with unique style.",
+    "entryDate": "2025-07-14"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Successfully launched the beta version of my app.",
+    "entryDate": "2025-07-15"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Explored the farmers market - discovered artisanal cheeses.",
+    "entryDate": "2025-07-15"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Integrated payment processing with Stripe API successfully.",
+    "entryDate": "2025-07-15"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Helped a colleague solve a complex technical problem.",
+    "entryDate": "2025-07-16"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Watched 'Inside Bill's Brain' - fascinating look at innovation.",
+    "entryDate": "2025-07-16"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Jamie, a startup founder with ambitious goals.",
+    "entryDate": "2025-07-16"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Finished reading my first book of the month ahead of schedule.",
+    "entryDate": "2025-07-17"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Visited the aquarium - the jellyfish exhibit was hypnotic.",
+    "entryDate": "2025-07-17"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Developed a machine learning model for user behavior prediction.",
+    "entryDate": "2025-07-17"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Received user testimonials about how my app helped them.",
+    "entryDate": "2025-07-18"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Read 'The Design of Everyday Things' by Don Norman.",
+    "entryDate": "2025-07-18"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Connected with Drew, a UX researcher with insightful methods.",
+    "entryDate": "2025-07-18"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Completed a 10-mile bike ride without feeling exhausted.",
+    "entryDate": "2025-07-19"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Found a quiet park perfect for reading and reflection.",
+    "entryDate": "2025-07-19"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Built a RESTful API with proper authentication and validation.",
+    "entryDate": "2025-07-19"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Gave a technical presentation that was well-received by peers.",
+    "entryDate": "2025-07-20"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Watched 'The Codebreaker' documentary about CRISPR technology.",
+    "entryDate": "2025-07-20"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Sam, a bioinformatician working on genetic research.",
+    "entryDate": "2025-07-20"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Successfully debugged a complex issue in production environment.",
+    "entryDate": "2025-07-21"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Explored an old bookstore with rare first-edition novels.",
+    "entryDate": "2025-07-21"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Implemented advanced search functionality with fuzzy matching.",
+    "entryDate": "2025-07-21"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Celebrated a team milestone - completed major project phase.",
+    "entryDate": "2025-07-22"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Read 'Thinking, Fast and Slow' by Daniel Kahneman.",
+    "entryDate": "2025-07-22"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Connected with Lee, a cognitive psychologist studying decision-making.",
+    "entryDate": "2025-07-22"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Perfect weather for a long walk and deep thinking.",
+    "entryDate": "2025-07-23"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Discovered a community garden with urban farming projects.",
+    "entryDate": "2025-07-23"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Created interactive data visualizations using D3.js library.",
+    "entryDate": "2025-07-23"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Received unexpected positive feedback from a mentor.",
+    "entryDate": "2025-07-24"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Watched 'The Future of Another Timeline' - thought-provoking sci-fi.",
+    "entryDate": "2025-07-24"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Robin, a science fiction writer with unique perspectives.",
+    "entryDate": "2025-07-24"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Finally understood a complex algorithm after hours of study.",
+    "entryDate": "2025-07-25"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Visited a modern art museum with interactive installations.",
+    "entryDate": "2025-07-25"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Developed a progressive web app with offline capabilities.",
+    "entryDate": "2025-07-25"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Connected deeply with an old friend over video call.",
+    "entryDate": "2025-07-26"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Read 'Educated' by Tara Westover - inspiring life story.",
+    "entryDate": "2025-07-26"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Pat, a self-taught programmer with amazing determination.",
+    "entryDate": "2025-07-26"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Successfully refactored legacy code without breaking functionality.",
+    "entryDate": "2025-07-27"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Explored a historic neighborhood with beautiful architecture.",
+    "entryDate": "2025-07-27"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Built a custom CMS system for content management.",
+    "entryDate": "2025-07-27"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Overcame writer's block and produced quality content.",
+    "entryDate": "2025-07-28"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Watched 'The Last Dance' documentary about Michael Jordan.",
+    "entryDate": "2025-07-28"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Connected with Coach Marcus, sharing basketball and life stories.",
+    "entryDate": "2025-07-28"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Received a thoughtful gift from a colleague unexpectedly.",
+    "entryDate": "2025-07-29"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Found a peaceful meditation garden in the city center.",
+    "entryDate": "2025-07-29"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Implemented voice recognition feature using Web Speech API.",
+    "entryDate": "2025-07-29"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Achieved a personal record in my meditation practice.",
+    "entryDate": "2025-07-30"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Read 'The Power of Habit' by Charles Duhigg.",
+    "entryDate": "2025-07-30"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Dr. Elena, a mindfulness expert with practical techniques.",
+    "entryDate": "2025-07-30"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Completed a month-long personal project successfully.",
+    "entryDate": "2025-07-31"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Explored a rooftop garden with panoramic city views.",
+    "entryDate": "2025-07-31"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Launched a new feature that users immediately loved.",
+    "entryDate": "2025-07-31"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Started August with a refreshing morning yoga session.",
+    "entryDate": "2025-08-01"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Read 'Breath' by James Nestor - fascinating respiratory science.",
+    "entryDate": "2025-08-01"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Dr. Ava, a pulmonologist with breathing exercise expertise.",
+    "entryDate": "2025-08-01"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Successfully mentored a junior developer through a complex problem.",
+    "entryDate": "2025-08-02"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Discovered an underground art gallery in the city.",
+    "entryDate": "2025-08-02"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Implemented automated deployment pipeline using GitHub Actions.",
+    "entryDate": "2025-08-02"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Received recognition for my work in team meeting.",
+    "entryDate": "2025-08-03"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Watched 'The Minimalists' documentary about intentional living.",
+    "entryDate": "2025-08-03"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Joshua, a minimalist lifestyle coach with practical advice.",
+    "entryDate": "2025-08-03"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Perfect weather for a productive outdoor work session.",
+    "entryDate": "2025-08-04"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Visited a local brewery with craft beer tasting.",
+    "entryDate": "2025-08-04"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Built a recommendation engine using collaborative filtering.",
+    "entryDate": "2025-08-04"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Solved a puzzle that had been challenging me for days.",
+    "entryDate": "2025-08-05"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Read 'The Gene' by Siddhartha Mukherjee - genetics explained.",
+    "entryDate": "2025-08-05"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Connected with Dr. Raj, a geneticist working on CRISPR research.",
+    "entryDate": "2025-08-05"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Hosted a successful team-building event for the department.",
+    "entryDate": "2025-08-06"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Explored a historic lighthouse with ocean views.",
+    "entryDate": "2025-08-06"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Developed a mobile app using Flutter framework.",
+    "entryDate": "2025-08-06"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Discovered a new favorite coffee shop with perfect ambiance.",
+    "entryDate": "2025-08-07"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Watched 'Free Solo' - inspiring story of courage and focus.",
+    "entryDate": "2025-08-07"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Alex Honnold, a rock climber with incredible determination.",
+    "entryDate": "2025-08-07"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Successfully completed a difficult certification exam.",
+    "entryDate": "2025-08-08"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Visited an observatory for stargazing and astronomy talk.",
+    "entryDate": "2025-08-08"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Created a data visualization dashboard for business analytics.",
+    "entryDate": "2025-08-08"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Had a meaningful conversation with a mentor about career growth.",
+    "entryDate": "2025-08-09"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Read 'The Lean Startup' by Eric Ries - methodology changed.",
+    "entryDate": "2025-08-09"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Connected with Sarah, a startup advisor with valuable insights.",
+    "entryDate": "2025-08-09"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Achieved a personal goal I had set months ago.",
+    "entryDate": "2025-08-10"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Explored a botanical garden with rare plant species.",
+    "entryDate": "2025-08-10"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Implemented OAuth 2.0 authentication system securely.",
+    "entryDate": "2025-08-10"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Received a surprise bonus for exceptional performance.",
+    "entryDate": "2025-08-11"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Watched 'Won't You Be My Neighbor' - heartwarming documentary.",
+    "entryDate": "2025-08-11"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Fred Rogers, sharing stories about kindness and community.",
+    "entryDate": "2025-08-11"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Successfully negotiated a better work arrangement remotely.",
+    "entryDate": "2025-08-12"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Discovered a hidden waterfall during a forest hike.",
+    "entryDate": "2025-08-12"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Built a serverless application using AWS Lambda functions.",
+    "entryDate": "2025-08-12"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Completed a challenging workout that pushed my limits.",
+    "entryDate": "2025-08-13"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Read 'Born to Run' by Christopher McDougall - running revolution.",
+    "entryDate": "2025-08-13"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Coach Maria, an ultramarathon runner with inspiring stories.",
+    "entryDate": "2025-08-13"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Fixed a major performance issue that was affecting users.",
+    "entryDate": "2025-08-14"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Visited a local museum with interactive science exhibits.",
+    "entryDate": "2025-08-14"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Developed a chatbot using natural language processing.",
+    "entryDate": "2025-08-14"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Celebrated a friend's birthday with heartfelt conversations.",
+    "entryDate": "2025-08-15"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Watched 'The Pursuit of Happyness' - motivating life story.",
+    "entryDate": "2025-08-15"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Chris Gardner, sharing entrepreneurship and perseverance stories.",
+    "entryDate": "2025-08-15"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Mastered a new programming language feature successfully.",
+    "entryDate": "2025-08-16"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Explored an abandoned factory converted into art space.",
+    "entryDate": "2025-08-16"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Created a responsive design system for consistent UI.",
+    "entryDate": "2025-08-16"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Received positive feedback from users on new feature.",
+    "entryDate": "2025-08-17"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Read 'The Body Keeps the Score' by Bessel van der Kolk.",
+    "entryDate": "2025-08-17"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Dr. Sarah, a trauma therapist with healing insights.",
+    "entryDate": "2025-08-17"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Successfully completed a complex integration project.",
+    "entryDate": "2025-08-18"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Visited a planetarium with stunning space visualization.",
+    "entryDate": "2025-08-18"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Implemented blockchain technology for secure data storage.",
+    "entryDate": "2025-08-18"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Had a breakthrough in understanding complex technical concept.",
+    "entryDate": "2025-08-19"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Watched 'The Imitation Game' about Alan Turing's life.",
+    "entryDate": "2025-08-19"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Professor Clarke, a computer science historian.",
+    "entryDate": "2025-08-19"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Achieved work-life balance with intentional scheduling.",
+    "entryDate": "2025-08-20"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Found a peaceful Zen garden in the city.",
+    "entryDate": "2025-08-20"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Developed an AI-powered recommendation system.",
+    "entryDate": "2025-08-20"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Successfully presented at a major industry conference.",
+    "entryDate": "2025-08-21"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Read 'The Innovators' by Walter Isaacson - tech history.",
+    "entryDate": "2025-08-21"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Steve Jobs, discussing innovation and design philosophy.",
+    "entryDate": "2025-08-21"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Completed a creative project that exceeded expectations.",
+    "entryDate": "2025-08-22"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Explored an art district with street murals everywhere.",
+    "entryDate": "2025-08-22"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Built a virtual reality experience using WebXR technology.",
+    "entryDate": "2025-08-22"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Overcame imposter syndrome through positive self-reflection.",
+    "entryDate": "2025-08-23"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Watched 'The Secret Life of Walter Mitty' - imagination celebration.",
+    "entryDate": "2025-08-23"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Walter Mitty, sharing adventures and life experiences.",
+    "entryDate": "2025-08-23"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Successfully launched a product feature users requested.",
+    "entryDate": "2025-08-24"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Visited a historic castle with fascinating architecture.",
+    "entryDate": "2025-08-24"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Created a cross-platform mobile application.",
+    "entryDate": "2025-08-24"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Received a thoughtful thank you from a mentee.",
+    "entryDate": "2025-08-25"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Read 'Man's Search for Meaning' by Viktor Frankl.",
+    "entryDate": "2025-08-25"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Viktor Frankl, discussing resilience and meaning in life.",
+    "entryDate": "2025-08-25"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Achieved a perfect balance of productivity and rest.",
+    "entryDate": "2025-08-26"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Discovered a secret garden behind the city library.",
+    "entryDate": "2025-08-26"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Implemented end-to-end encryption for user data security.",
+    "entryDate": "2025-08-26"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Successfully collaborated with a difficult team member.",
+    "entryDate": "2025-08-27"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Watched 'Hidden Figures' - inspiring story of brilliant women.",
+    "entryDate": "2025-08-27"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Katherine Johnson, sharing mathematics and space exploration.",
+    "entryDate": "2025-08-27"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Completed a difficult task that others thought impossible.",
+    "entryDate": "2025-08-28"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Explored a cave system with amazing geological formations.",
+    "entryDate": "2025-08-28"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Developed a quantum computing simulation algorithm.",
+    "entryDate": "2025-08-28"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Received recognition for going above and beyond expectations.",
+    "entryDate": "2025-08-29"
+  },
+  {
+    "promptQuestion": "📚 What did you read/watch?",
+    "answer": "Read 'The Wright Brothers' by David McCullough - aviation pioneers.",
+    "entryDate": "2025-08-29"
+  },
+  {
+    "promptQuestion": "🤝 Did you meet anyone new?",
+    "answer": "Met Orville Wright, discussing innovation and perseverance.",
+    "entryDate": "2025-08-29"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Successfully managed a crisis with calm and effectiveness.",
+    "entryDate": "2025-08-30"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Visited a volcano observatory with live monitoring equipment.",
+    "entryDate": "2025-08-30"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Built a real-time monitoring system for system health.",
+    "entryDate": "2025-08-30"
+  },
+  {
+    "promptQuestion": "🌟 What was the best part of your day?",
+    "answer": "Completed the month with all personal goals achieved.",
+    "entryDate": "2025-08-31"
+  },
+  {
+    "promptQuestion": "📍 What interesting place did you visit today?",
+    "answer": "Explored a coastal lighthouse with panoramic ocean views.",
+    "entryDate": "2025-08-31"
+  },
+  {
+    "promptQuestion": "💼 What did you work on?",
+    "answer": "Launched a major product update with zero downtime.",
+    "entryDate": "2025-08-31"
+  }
+]

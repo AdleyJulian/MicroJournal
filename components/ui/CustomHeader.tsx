@@ -21,7 +21,7 @@ export default function CustomHeader({ title, showBackButton = true }: CustomHea
     <View
       className="bg-background border-b border-border"
       style={{
-        paddingTop: insets.top + 8, // Add extra padding for better spacing
+        paddingTop: insets.top , 
         ...Platform.select({
           ios: {
             shadowColor: '#000',
