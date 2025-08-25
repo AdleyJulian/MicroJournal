@@ -74,7 +74,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
             <Favicon website={feed.url} />
             <Text className="text-sm ml-2 text-foreground">
               {/* Changed text color to semantic */}
-              {`${feed.title} (${getArticleCountByFeed(feed.title)})`}
+              {`${feed.title} (${getArticleCountByFeed(feed.url)})`}
             </Text>
           </TouchableOpacity>
         ))}

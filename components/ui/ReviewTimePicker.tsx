@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { View, ScrollView, TouchableOpacity, Dimensions } from "react-native";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Text } from "./text";
 import { Card, CardContent } from "./card";
 import { getCardCountsByDays, getForgottenCardCounts, getReviewSessionCardCount } from "~/db/queries";
@@ -25,51 +26,45 @@ export const ReviewTimePicker = ({
   selectedForgottenDays,
   maxDays = 30,
 }: ReviewTimePickerProps) => {
-  const [cardCounts, setCardCounts] = useState<TimeOption[]>([]);
-  const [forgottenCounts, setForgottenCounts] = useState<TimeOption[]>([]);
-  const [totalCount, setTotalCount] = useState({ totalCards: 0, regularCards: 0, forgottenCards: 0 });
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    const loadCardCounts = async () => {
-      try {
-        setLoading(true);
-        const [cardData, forgottenData, sessionCount] = await Promise.all([
-          getCardCountsByDays(maxDays),
-          getForgottenCardCounts(maxDays),
-          getReviewSessionCardCount(selectedDays, selectedForgottenDays)
-        ]);
-        setCardCounts(cardData);
-        setForgottenCounts(forgottenData);
-        setTotalCount(sessionCount);
-      } catch (error) {
-        console.error("Error loading card counts:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Query for card counts by days - cached by maxDays
+  const { data: cardCounts = [], isLoading: cardCountsLoading } = useQuery({
+    queryKey: ["cardCounts", maxDays],
+    queryFn: () => getCardCountsByDays(maxDays),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
-    loadCardCounts();
-  }, [maxDays, selectedDays, selectedForgottenDays]);
+  // Query for forgotten card counts - cached by maxDays
+  const { data: forgottenCounts = [], isLoading: forgottenCountsLoading } = useQuery({
+    queryKey: ["forgottenCounts", maxDays],
+    queryFn: () => getForgottenCardCounts(maxDays),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 
-  const handleDaysSelect = async (days: number) => {
+  // Query for session count - cached by selected days
+  const { data: totalCount = { totalCards: 0, regularCards: 0, forgottenCards: 0 }, isLoading: sessionCountLoading } = useQuery({
+    queryKey: ["sessionCount", selectedDays, selectedForgottenDays],
+    queryFn: () => getReviewSessionCardCount(selectedDays, selectedForgottenDays),
+    staleTime: 2 * 60 * 1000, // 2 minutes
+  });
+
+  const isLoading = cardCountsLoading || forgottenCountsLoading || sessionCountLoading;
+
+  const handleDaysSelect = (days: number) => {
     onDaysChange(days);
-    try {
-      const sessionCount = await getReviewSessionCardCount(days, selectedForgottenDays);
-      setTotalCount(sessionCount);
-    } catch (error) {
-      console.error("Error updating session count:", error);
-    }
+    // Invalidate the session count query to refetch with new days
+    queryClient.invalidateQueries({
+      queryKey: ["sessionCount", days, selectedForgottenDays]
+    });
   };
 
-  const handleForgottenDaysSelect = async (days: number) => {
+  const handleForgottenDaysSelect = (days: number) => {
     onForgottenDaysChange(days);
-    try {
-      const sessionCount = await getReviewSessionCardCount(selectedDays, days);
-      setTotalCount(sessionCount);
-    } catch (error) {
-      console.error("Error updating session count:", error);
-    }
+    // Invalidate the session count query to refetch with new forgotten days
+    queryClient.invalidateQueries({
+      queryKey: ["sessionCount", selectedDays, days]
+    });
   };
 
   const formatDays = (days: number): string => {
@@ -106,7 +101,7 @@ export const ReviewTimePicker = ({
     );
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Card>
         <CardContent className="p-4">

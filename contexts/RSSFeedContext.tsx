@@ -25,7 +25,7 @@ export interface RSSFeed {
 }
 
 interface FeedCount {
-  [feedTitle: string]: number;
+  [feedUrl: string]: number;
 }
 
 interface UseRSSFeedOptions {
@@ -47,7 +47,7 @@ interface RSSContextValue {
   loadMore: () => void;
   options: UseRSSFeedOptions;
   getAllArticles: () => RSSItem[];
-  getArticleCountByFeed: (feedTitle: string) => number;
+  getArticleCountByFeed: (feedUrl: string) => number;
 }
 
 const CACHE_KEY = "RSS_FEED_CACHE";
@@ -79,6 +79,8 @@ export const RSSFeedProvider: React.FC<{
 }> = ({ children, initialOptions }) => {
   const { feedSources } = useRSSFeedConfig();
   const queryClient = useQueryClient();
+
+
   
   // Memoize options to prevent unnecessary re-renders
   const options = useMemo(() => ({
@@ -89,9 +91,8 @@ export const RSSFeedProvider: React.FC<{
   // Helper functions
   const calculateFeedCounts = useCallback((articles: RSSItem[]): FeedCount => {
     return articles.reduce((counts, article) => {
-      if (article.source?.name) {
-        const feedTitle = article.source.name.toLowerCase();
-        counts[feedTitle] = (counts[feedTitle] || 0) + 1;
+      if (article.source?.url) {
+        counts[article.source.url] = (counts[article.source.url] || 0) + 1;
       }
       return counts;
     }, {} as FeedCount);
@@ -118,6 +119,7 @@ export const RSSFeedProvider: React.FC<{
       items.forEach((item: any) => {
         if (!item) return;
         const image = item["media:content"]?.url || item.enclosure?.url || "";
+
         parsedArticles.push({
           id: `${item.link || ""}${Date.now()}${Math.random()}`,
           title: stripHtmlTags(item.title || ""),
@@ -127,7 +129,7 @@ export const RSSFeedProvider: React.FC<{
           image,
           source: {
             name: result.rss.channel.title || feed.title,
-            url: result.rss.channel.link || feed.url,
+            url: result.rss.channel.link || feed.url, // Use the channel link from RSS feed
           },
         });
       });
@@ -202,6 +204,8 @@ export const RSSFeedProvider: React.FC<{
     refetchOnWindowFocus: false,
   });
 
+
+
   // Pagination state (kept outside of React Query)
   const [page, setPage] = React.useState(0);
   
@@ -232,10 +236,25 @@ export const RSSFeedProvider: React.FC<{
 
   // Helper methods
   const getArticleCountByFeed = useCallback(
-    (feedTitle: string): number => {
-      return feedCounts[feedTitle.toLowerCase()] || 0;
+    (feedUrl: string): number => {
+      // Create a mapping from feed URLs to channel URLs
+      const feedToChannelMap: { [feedUrl: string]: string } = {};
+      feedSources.forEach(feed => {
+        // For NYT feeds, map the RSS URL to the web URL
+        if (feed.url.includes('nytimes.com/services/xml/rss/nyt/HomePage')) {
+          feedToChannelMap[feed.url] = 'https://www.nytimes.com';
+        } else if (feed.url.includes('nytimes.com/services/xml/rss/nyt/World')) {
+          feedToChannelMap[feed.url] = 'https://www.nytimes.com/section/world';
+        } else {
+          // For other feeds, use the feed URL as-is
+          feedToChannelMap[feed.url] = feed.url;
+        }
+      });
+
+      const channelUrl = feedToChannelMap[feedUrl];
+      return feedCounts[channelUrl] || 0;
     },
-    [feedCounts]
+    [feedCounts, feedSources]
   );
 
   const getAllArticles = useCallback(() => {

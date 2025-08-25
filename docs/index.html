@@ -46,10 +46,18 @@
         }
 
         .header .icon {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 20px;
-            border-radius: 20px;
+            width: 140px;
+            height: 140px;
+            margin-bottom: 30px;
+            border-radius: 28px;
+            box-shadow: 0 8px 32px rgba(10, 126, 164, 0.2);
+            border: 3px solid rgba(10, 126, 164, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header .icon:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 40px rgba(10, 126, 164, 0.3);
         }
 
         .card {
@@ -100,6 +108,100 @@
             box-shadow: 0 4px 12px rgba(10, 126, 164, 0.3);
         }
 
+        .wiki-link {
+            color: #0a7ea4;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .wiki-link:hover {
+            color: #086a91;
+            border-bottom-color: #0a7ea4;
+            transform: translateY(-1px);
+        }
+
+        .wiki-link::after {
+            content: "📖";
+            position: absolute;
+            top: -2px;
+            right: -18px;
+            font-size: 0.8em;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .wiki-link:hover::after {
+            opacity: 1;
+        }
+
+        .how-it-works {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid #e1e5e9;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .how-it-works:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .how-it-works h2 {
+            font-size: 1.8rem;
+            color: #11181C;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #0a7ea4;
+            padding-bottom: 10px;
+        }
+
+        .how-it-works .step {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #0a7ea4;
+        }
+
+        .how-it-works .step:last-child {
+            margin-bottom: 0;
+        }
+
+        .how-it-works .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: #0a7ea4;
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+
+        .how-it-works .step-content h3 {
+            font-size: 1.2rem;
+            color: #11181C;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .how-it-works .step-content p {
+            font-size: 1rem;
+            color: #687076;
+            line-height: 1.5;
+        }
+
         .footer {
             text-align: center;
             margin-top: 50px;
@@ -135,6 +237,22 @@
                 padding: 20px;
             }
 
+            .how-it-works {
+                padding: 20px;
+            }
+
+            .how-it-works .step {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                padding: 15px;
+            }
+
+            .how-it-works .step-number {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
             .btn {
                 display: block;
                 width: 100%;
@@ -154,7 +272,35 @@
 
         <div class="app-info">
             <h3>🧠 Memory Enhancement Through Spaced Repetition</h3>
-            <p>Pensieve combines journaling with the science of spaced repetition to help you never forget important insights, lessons learned, or meaningful moments.</p>
+            <p>Pensieve combines journaling with the science of <a href="https://en.wikipedia.org/wiki/Spaced_repetition" target="_blank" class="wiki-link">spaced repetition</a> to help build your autobiographical memory.</p>
+        </div>
+
+        <div class="how-it-works">
+            <h2>⚙️ How It Works</h2>
+
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Quick Daily Entries</h3>
+                    <p>Record 3-5 simple entries a day. Each entry is a memory anchor that helps you recall your day.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>Smart Flashcard Reviews</h3>
+                    <p>Your entries become flashcards. Our spaced repetition system shows them to you right before you forget.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Superior Autobiographical Memory</h3>
+                    <p>Over time you develop a superior autobiographical memory with the ability to remember each day distinctly.</p>
+                </div>
+            </div>
         </div>
 
         <div class="card">
@@ -178,7 +324,7 @@
 
     <footer class="footer">
         <p>&copy; 2024 Pensieve. All rights reserved.</p>
-        <p>Last updated: December 19, 2024</p>
+        <p>Last updated: August 25, 2025</p>
     </footer>
 </body>
 </html>

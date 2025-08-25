@@ -32,7 +32,6 @@ const CreateMemoryScreen: React.FC = () => {
               
       <CustomHeader title="Edit" showBackButton={true} />
       <ScrollView className="flex-1">
-      <Text> Test</Text>
         <EditCardForm data={data} />
       </ScrollView>
     </View>

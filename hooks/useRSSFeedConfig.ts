@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
 
@@ -22,30 +22,42 @@ const defaultRSSFeeds: RSSFeed[] = [
 ];
 
 export const useRSSFeedConfig = () => {
-  const [feedSources, setFeedSources] = useState<RSSFeed[]>(defaultRSSFeeds);
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    loadFeedSources();
-  }, []);
+  // Query for loading RSS feed sources from AsyncStorage
+  const { data: feedSources = defaultRSSFeeds, isLoading: isLoadingFeeds } = useQuery({
+    queryKey: ["rssFeedSources"],
+    queryFn: async (): Promise<RSSFeed[]> => {
+      try {
+        const stored = await AsyncStorage.getItem("rssFeeds");
+        return stored ? JSON.parse(stored) : defaultRSSFeeds;
+      } catch (error) {
+        console.error("Error loading feed sources:", error);
+        Alert.alert("Error", "Could not load RSS feed sources");
+        return defaultRSSFeeds;
+      }
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes - RSS feed config doesn't change often
+  });
 
-  const loadFeedSources = async () => {
-    try {
-      const stored = await AsyncStorage.getItem("rssFeeds");
-      setFeedSources(stored ? JSON.parse(stored) : defaultRSSFeeds);
-    } catch (error) {
-      console.error("Error loading feed sources:", error);
-      Alert.alert("Error", "Could not load RSS feed sources");
-    }
-  };
-
-  const saveFeedSources = async (updated: RSSFeed[]) => {
-    try {
+  // Mutation for saving feed sources
+  const saveFeedSourcesMutation = useMutation({
+    mutationFn: async (updated: RSSFeed[]) => {
       await AsyncStorage.setItem("rssFeeds", JSON.stringify(updated));
-      setFeedSources(updated);
-    } catch (error) {
+      return updated;
+    },
+    onSuccess: () => {
+      // Invalidate the query to refetch the data
+      queryClient.invalidateQueries({ queryKey: ["rssFeedSources"] });
+    },
+    onError: (error) => {
       console.error("Error saving feed sources:", error);
       Alert.alert("Error", "Could not save RSS feed sources");
-    }
+    },
+  });
+
+  const saveFeedSources = (updated: RSSFeed[]) => {
+    saveFeedSourcesMutation.mutate(updated);
   };
 
   const addFeedSource = (url: string, title: string) => {
@@ -91,5 +103,7 @@ export const useRSSFeedConfig = () => {
     addFeedSource,
     deleteFeedSource,
     saveFeedSources,
+    isLoading: isLoadingFeeds,
+    isSaving: saveFeedSourcesMutation.isPending,
   };
 };

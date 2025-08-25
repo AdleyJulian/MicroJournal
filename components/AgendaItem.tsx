@@ -9,25 +9,25 @@ import { Link } from "expo-router";
 export const AgendaItem = memo(
   ({ item }: { item: JournalEntry }) => {
 
-    const answerLimit = 180;
-    const truncatedAnswer = item.answer ? item.answer.length > answerLimit ? item.answer.slice(0, answerLimit) + "..." : item.answer : "No entry";
+
+    
     return (
       <Link asChild href={{ pathname: "/entries", params: { id: item.id } }}>
         <Pressable
           className="p-3 mb-2 shadow-sm bg-card"
           style={{ elevation: 1 }}
-          //   onLongPress={() => console.log("Item pressed:", JSON.stringify(item))}
+
         >
           <View className="flex-row items-start space-x-3">
-            {/* Status indicator */}
 
-            {/* Content */}
             <View className="flex-1">
               <Text className="text-base font-medium text-gray-800 dark:text-gray-100 mb-1">
                 {item.promptQuestion || "No question provided"}
               </Text>
-              <Text className="text-sm text-gray-600 dark:text-gray-300">
-                {truncatedAnswer }
+              <Text className="text-sm text-gray-600 dark:text-gray-300"
+              numberOfLines={2}
+              >
+                {item.answer}
               </Text>
             </View>
           </View>

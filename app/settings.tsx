@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView, View, Switch } from "react-native";
+import { ScrollView, View, Switch, Linking } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Constants from "expo-constants";
 import { ImportButton, ExportButton } from "@/components/SettingsComponents";
 import { useNotifications } from "@/hooks/useNotifications";
-
-// Get the app version from expo constants
-const APP_VERSION = (Constants.expoConfig as any)?.version || "1.0.0";
-
+// import { OnboardingManager } from "@/components/OnboardingManager";
 import {
   Card,
   CardContent,
   CardHeader,
   Text,
   ThemeToggle,
-  Separator,
-  CardFooter,
   CustomHeader,
   TimePicker,
+  Button,
 } from "@/components/ui";
+
+// Get the app version from expo constants
+const APP_VERSION = (Constants.expoConfig as any)?.version || "1.0.0";
 
 
 // Helper function to format 24-hour time to 12-hour display
@@ -31,6 +30,7 @@ const formatTime = (time24: string) => {
 
 const Settings: React.FC = () => {
   const [isDefaultCardsEnabled, setIsDefaultCardsEnabled] = useState(true);
+  // const [showOnboarding, setShowOnboarding] = useState(false);
   const {
     isEnabled: isNotificationsEnabled,
     isLoading: isNotificationsLoading,
@@ -60,6 +60,37 @@ const Settings: React.FC = () => {
       await AsyncStorage.setItem("defaultCardsSetting", JSON.stringify(newValue));
     } catch (error) {
       console.error("Failed to save default cards setting.", error);
+    }
+  };
+
+  // const handleStartTutorial = () => {
+  //   setShowOnboarding(true);
+  // };
+
+  // const handleTutorialComplete = async () => {
+  //   setShowOnboarding(false);
+  //   try {
+  //     await AsyncStorage.setItem("tutorialCompleted", "true");
+  //   } catch (error) {
+  //     console.error("Failed to save tutorial completion status.", error);
+  //   }
+  // };
+
+  // const handleTutorialCancel = () => {
+  //   setShowOnboarding(false);
+  // };
+
+  const handleOpenFAQ = async () => {
+    const faqUrl = "https://adleyjulian.github.io/MicroJournal/docs/FAQ.html";
+    try {
+      const supported = await Linking.canOpenURL(faqUrl);
+      if (supported) {
+        await Linking.openURL(faqUrl);
+      } else {
+        console.error("Cannot open FAQ URL");
+      }
+    } catch (error) {
+      console.error("Error opening FAQ:", error);
     }
   };
 
@@ -173,6 +204,35 @@ const Settings: React.FC = () => {
             </CardContent>
           </Card>
 
+          {/* Tutorial Section */}
+          {/* <Card className="m-2">
+            <CardHeader>
+              <Text className="text-lg font-semibold">Getting Started</Text>
+            </CardHeader>
+            <CardContent>
+              <View className="gap-4">
+                <View className="flex-row justify-between items-center">
+                  <View className="flex-1">
+                    <Text className="text-sm font-medium mb-1">Retake Tutorial</Text>
+                    <Text className="text-xs text-muted-foreground">Review how to use Pensieve</Text>
+                  </View>
+                  <Button onPress={handleStartTutorial} size="sm">
+                    <Text className="text-primary-foreground font-medium">Start</Text>
+                  </Button>
+                </View>
+                <View className="flex-row justify-between items-center">
+                  <View className="flex-1">
+                    <Text className="text-sm font-medium mb-1">Help & FAQ</Text>
+                    <Text className="text-xs text-muted-foreground">Find answers to common questions</Text>
+                  </View>
+                  <Button onPress={handleOpenFAQ} size="sm" variant="outline">
+                    <Text className="text-primary font-medium">Open FAQ</Text>
+                  </Button>
+                </View>
+              </View>
+            </CardContent>
+          </Card> */}
+
           {/* About Section */}
           <Card className="m-2 mt-4">
             <CardContent className="items-center p-2">
@@ -181,6 +241,13 @@ const Settings: React.FC = () => {
           </Card>
         </View>
       </ScrollView>
+
+      {/* Onboarding Manager */}
+      {/* <OnboardingManager
+        visible={showOnboarding}
+        onComplete={handleTutorialComplete}
+        onCancel={handleTutorialCancel}
+      /> */}
     </View>
   );
 };

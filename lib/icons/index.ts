@@ -34,3 +34,7 @@ export { Image } from "./Image";
 export { TrendingUp } from "./TrendingUp";
 export { Activity } from "./Activity";
 export { RotateCcw } from "./RotateCcw";
+export { Zap } from "./Zap";
+export { Target } from "./Target";
+export {ArrowRight} from "./ArrowRight";
+export {CheckCircle } from "./CheckCircle";

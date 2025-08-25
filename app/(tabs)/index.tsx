@@ -1,7 +1,7 @@
-import { View, ScrollView, Pressable } from "react-native";
-import React, { useEffect } from "react"; // Import useEffect
+import { View, ScrollView } from "react-native";
+import React, { useEffect } from "react";
 import { useRefreshOnFocus } from "@/hooks/useRefreshOnFocus";
-import { createDailyDayOfWeekEntry } from "@/db/mutations"; // Import the new function
+import { createDailyDayOfWeekEntry } from "@/db/mutations";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
@@ -11,20 +11,15 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardFooter,
 } from "@/components/ui";
 import { Link } from "expo-router";
 import { Brain, Calendar, Settings } from "@/lib/icons";
+import { RecentMemoriesSection } from "@/components/RecentMemoriesSection";
 
 import * as queries from "@/db/queries";
 import { useQuery } from "@tanstack/react-query";
-import { formatDistance } from "date-fns/formatDistance";
 
-type Memory = {
-  id: string;
-  title: string;
-  createdAt: string;
-};
+
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
@@ -106,14 +101,7 @@ export default function HomeScreen() {
     memoriesToday: todaysMemories?.length || 0,
   };
 
-  const recentMemories: Memory[] =
-    memories?.slice(0, Math.min(memories?.length, 5)).map((memory) => ({
-      id: memory.journal_cards.id.toString(),
-      title: memory.journal_cards.answer || "",
-      createdAt: formatDistance(memory.journal_cards.entryDate, new Date(), {
-        addSuffix: true,
-      }),
-    })) || [];
+
 
   return (
     <View className="flex-1 bg-background">
@@ -160,46 +148,11 @@ export default function HomeScreen() {
         </Card>
 
         {/* Recent Memories */}
-        <Card className="mb-4">
-          <CardHeader>
-            <CardTitle>
-              <Text>Recent Memories</Text>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {recentMemories.map((memory) => (
-              <Link
-                asChild
-                href={{ pathname: "/entries", params: { id: memory.id } }}
-                key={memory.id}
-              >
-                <Pressable
-                  key={memory.id}
-                  className="flex-row justify-between items-center py-2 border-b border-border last:border-b-0"
-                  onPress={() => {
-                    // TODO: Navigate to memory detail
-                  }}
-                >
-                  <View>
-                    <Text className=" font-medium">{memory.title}</Text>
-                    <Text className="text-sm text-muted-foreground">
-                      {memory.createdAt}
-                    </Text>
-                  </View>
-                </Pressable>
-              </Link>
-            ))}
-          </CardContent>
-          <CardFooter>
-            <Text className="text-sm text-muted-foreground">
-              Total: {reviewStats.totalMemories} memories • Today:{" "}
-              {reviewStats.memoriesToday}
-            </Text>
-          </CardFooter>
-          <CardContent>
-            <View className="flex-1"></View>
-          </CardContent>
-        </Card>
+        <RecentMemoriesSection
+          memories={memories as any}
+          totalMemories={reviewStats.totalMemories}
+          memoriesToday={reviewStats.memoriesToday}
+        />
       </ScrollView>
     </View>
   );
