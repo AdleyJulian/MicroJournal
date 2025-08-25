@@ -38,3 +38,5 @@ export { Zap } from "./Zap";
 export { Target } from "./Target";
 export {ArrowRight} from "./ArrowRight";
 export {CheckCircle } from "./CheckCircle";
+export { Share } from "./Share";
+export { Share2 } from "./Share2";

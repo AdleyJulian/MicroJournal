@@ -11,11 +11,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Trash2, Edit2 } from "@/lib/icons";
+import { Trash2, Edit2, Share2 } from "@/lib/icons";
 import { Link, router } from "expo-router";
 import { Text } from "@/components/ui";
 import { useMutation } from "@tanstack/react-query";
 import * as mutations from "@/db/mutations";
+import { shareEntryWithImage, shareTextWithRN } from "@/lib/shareUtils";
+import { type JournalEntry, type MediaAttachment } from "@/db/schema/schema";
 
 import Toast from "react-native-toast-message";
 
@@ -36,11 +38,15 @@ const showToast = () => {
 
 interface EntryActionsProps {
   entryId: string;
+  entry?: JournalEntry;
+  media?: MediaAttachment | null;
   isLoading?: boolean;
 }
 
-export function EntryActions({ entryId, isLoading }: EntryActionsProps) {
+export function EntryActions({ entryId, entry, media, isLoading }: EntryActionsProps) {
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
+
   const { mutate: deleteEntry } = useMutation({
     mutationFn: (entryId: number) => mutations.deleteEntry(entryId),
     onSuccess: () => {
@@ -53,16 +59,59 @@ export function EntryActions({ entryId, isLoading }: EntryActionsProps) {
     await deleteEntry(parseInt(entryId));
   };
 
+  const handleShare = async () => {
+    if (!entry) return;
+
+    setIsSharing(true);
+    try {
+      await shareEntryWithImage(entry, media || null);
+      // Show success toast
+      Toast.show({
+        type: "success",
+        text1: "Shared Successfully",
+        text2: "Memory shared via native sharing",
+        visibilityTime: 2000,
+        autoHide: true,
+        position: "bottom",
+        bottomOffset: 80,
+      });
+    } catch (error) {
+      console.error('Share failed:', error);
+      // Show error toast
+      Toast.show({
+        type: "error",
+        text1: "Share Failed",
+        text2: "Unable to share this memory",
+        visibilityTime: 3000,
+        autoHide: true,
+        position: "bottom",
+        bottomOffset: 80,
+      });
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
   return (
-    <CardFooter className="flex-row justify-end space-x-2 mt-4">
+    <CardFooter className="flex-row justify-around gap-3 mt-6 px-1">
+      <Button
+        variant="outline"
+        className="flex-row items-center gap-2 px-4 py-2"
+        onPress={handleShare}
+        disabled={isLoading || isSharing || !entry}
+      >
+        <Share2 className="w-4 h-4 text-foreground" />
+        <Text>{isSharing ? "Sharing..." : "Share"}</Text>
+      </Button>
+
       <Link asChild href={{ pathname: "/edit", params: { id: entryId } }}>
         <Button
           variant="outline"
-          className="flex-row items-center space-x-2"
+          className="flex-row items-center gap-2 px-4 py-2"
           onPress={() => console.log("Edit entry", entryId)}
           disabled={isLoading}
         >
-          <Edit2 className="w-4 h-4 mr-2 text-foreground" />
+          <Edit2 className="w-4 h-4 text-foreground" />
           <Text>Edit</Text>
         </Button>
       </Link>
@@ -71,10 +120,10 @@ export function EntryActions({ entryId, isLoading }: EntryActionsProps) {
         <AlertDialogTrigger asChild>
           <Button
             variant="destructive"
-            className="flex-row items-center space-x-2 m-2"
+            className="flex-row items-center gap-2 px-4 py-2"
             disabled={isLoading || isDeleting}
           >
-            <Trash2 className="w-4 h-4 text-white mr-2" />
+            <Trash2 className="w-4 h-4 text-white" />
             <Text>{isDeleting ? "Deleting..." : "Delete"}</Text>
           </Button>
         </AlertDialogTrigger>

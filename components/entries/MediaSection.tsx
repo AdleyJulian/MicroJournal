@@ -42,7 +42,7 @@ export function MediaSection({
 
   return (
     <>
-      <Card className="m-4">
+      <Card className="mx-4">
         <View className="flex-row items-start">
           {/* Flexbox row, align items to top */}
           {media && ( // Conditionally render image

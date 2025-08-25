@@ -1,0 +1,62 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "info": {
+      "en-US": {
+        "title": "Pensieve",
+        "subtitle": "Superior memory building",
+        "description": "Pensieve combines journaling with the science of spaced repetition to help build your autobiographical memory.\n\n🧠 **Memory Enhancement Through Spaced Repetition**\nOur smart system turns your daily entries into flashcards that appear right before you forget them. This scientifically-proven method helps build superior autobiographical memory over time.\n\n📝 **Quick Daily Entries**\nRecord 3-5 simple entries a day. Each entry becomes a memory anchor that helps you recall your day distinctly. Add photos, organize with tags, and capture thoughts inspired by current events.\n\n📅 **Smart Flashcard Reviews**\nYour entries automatically become flashcards. Our spaced repetition system shows them to you at the perfect time - right before you forget. Rate how well you remember each one, and the system learns to optimize your review schedule.\n\n🔄 **Superior Autobiographical Memory**\nOver time, you'll develop the ability to remember each day distinctly. Explore your memory timeline with timeline views. Give each day a unique identity you can look back on.\n\n🌟 **Daily Habit Building**\nBuild consistent journaling habits with daily streaks and progress tracking. Watch as small, regular reflections compound into a comprehensive personal knowledge base over time.\n\n**Why Pensieve?**\nUnlike traditional note-taking apps that just organize information, Pensieve focuses on retention. Our spaced repetition system ensures that important information stays accessible in your memory, not just in your digital storage.\n\n**Privacy First**\nAll your data stays on your device. No accounts, no cloud storage, no tracking. Your thoughts remain completely private and secure.\n\n**Start your memory enhancement journey today!**",
+        "keywords": [
+          "memory enhancement",
+          "spaced repetition",
+          "journaling",
+          "FSRS",
+          "memory training",
+          "habit building"
+        ],
+        "marketingUrl": "https://adleyjulian.github.io/MicroJournal/",
+        "supportUrl": "https://adleyjulian.github.io/MicroJournal/",
+        "privacyPolicyUrl": "https://adleyjulian.github.io/MicroJournal/privacy-policy.html"
+      }
+    },
+    "categories": [
+      "PRODUCTIVITY",
+      "EDUCATION"
+    ],
+    "advisory": {
+      "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+      "contests": "NONE",
+      "gamblingSimulated": "NONE",
+      "medicalOrTreatmentInformation": "NONE",
+      "profanityOrCrudeHumor": "NONE",
+      "sexualContentGraphicAndNudity": "NONE",
+      "sexualContentOrNudity": "NONE",
+      "horrorOrFearThemes": "NONE",
+      "matureOrSuggestiveThemes": "NONE",
+      "violenceCartoonOrFantasy": "NONE",
+      "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+      "violenceRealistic": "NONE",
+      "unrestrictedWebAccess": false,
+      "gambling": false,
+      "kidsAgeBand": null,
+      "seventeenPlus": false,
+      "ageRatingOverride": "NONE",
+      "koreaAgeRatingOverride": "NONE",
+      "lootBox": false
+    },
+    "version": "1.0.1",
+    "copyright": "© 2024 Pensieve",
+    "release": {
+      "automaticRelease": true
+    },
+    "review": {
+      "firstName": "Pensieve",
+      "lastName": "Journal",
+      "email": "pensieve.journal@proton.me",
+      "phone": "",
+      "demoUser": "",
+      "demoPassword": "",
+      "notes": "Please review the app functionality focusing on the spaced repetition journaling features."
+    }
+  }
+}

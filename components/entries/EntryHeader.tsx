@@ -39,7 +39,7 @@ export function EntryHeader({ entry, isLoading }: EntryHeaderProps) {
         </Text>
       </View>
 
-      <CardTitle className="text-xl mb-2">{entry.promptQuestion}</CardTitle>
+      <CardTitle className="text-xl">{entry.promptQuestion}</CardTitle>
       {/* <CardContent>
         <Text>{entry.answer}</Text>
       </CardContent> */}

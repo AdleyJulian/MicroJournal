@@ -1,7 +1,6 @@
 import { useLocalSearchParams } from "expo-router";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import * as queries from "@/db/queries";
-import * as mutations from "@/db/mutations";
 import { Text } from "@/components/ui";
 import { ScrollView } from "react-native-gesture-handler";
 import { View } from "react-native";
@@ -36,14 +35,18 @@ export default function JournalEntryScreen() {
       <CustomHeader title="Entry" showBackButton={true} />
       <ScrollView className="flex-1">
         <EntryHeader entry={data.journal_cards} isLoading={isLoading} />
-        {/* <EntryContent entry={data.journal_cards} isLoading={isLoading} /> */}
         <MediaSection
           media={data.media_attachments}
           entry={data.journal_cards}
           isLoading={isLoading}
         />
         <EntryMetrics entry={data.journal_cards} isLoading={isLoading} />
-        <EntryActions entryId={id} isLoading={isLoading} />
+        <EntryActions
+          entryId={id}
+          entry={data.journal_cards}
+          media={data.media_attachments}
+          isLoading={isLoading}
+        />
       </ScrollView>
     </View>
   );

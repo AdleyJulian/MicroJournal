@@ -1,4 +1,4 @@
-import React from "react";
+import React, { JSX } from "react";
 import { View } from "react-native";
 import {
   Card,
@@ -44,7 +44,7 @@ export function EntryMetrics({ entry, isLoading }: EntryMetricsProps) {
   const difficultyColor = getMetricColor(1 - entry.difficulty, 1);
 
   return (
-    <Card className="mt-4">
+    <Card className="mt-4 mx-4">
       <CardHeader>
         <CardTitle className="text-xl">Learning Progress</CardTitle>
       </CardHeader>

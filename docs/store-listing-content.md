@@ -11,42 +11,36 @@
 **Pensieve** (30 characters)
 
 ### Short Description (80 characters)
-Transform memories into lasting knowledge with smart review scheduling.
+Build superior autobiographical memory with daily journaling & smart reviews.
 
-*(Character count: 67)*
+*(Character count: 76)*
 
 ### Full Description (4000 characters)
 
 ```
-Pensieve is your personal memory enhancement tool that combines the art of journaling with the science of spaced repetition. Never forget important insights, lessons learned, or meaningful moments again.
+Pensieve combines journaling with the science of spaced repetition to help build your autobiographical memory. 
 
-🧠 **Smart Memory Enhancement**
-Our advanced FSRS (Free Spaced Repetition Scheduler) algorithm intelligently determines when you should review each entry to maximize long-term retention. Unlike simple reminder apps, Pensieve learns from your memory patterns and adapts review schedules accordingly.
+🧠 **Memory Enhancement Through Spaced Repetition**
+Our smart system turns your daily entries into flashcards that appear right before you forget them. This scientifically-proven method helps build superior autobiographical memory over time.
 
-📝 **Rich Journaling Experience**
-Create journal entries with text, images, and media. Use our news feed integration to capture thoughts inspired by current events, or create standalone entries for personal reflection. Organize your entries with custom tags and categories.
+📝 **Quick Daily Entries**
+Record 3-5 simple entries a day. Each entry becomes a memory anchor that helps you recall your day distinctly. Add photos, organize with tags, and capture thoughts inspired by current events.
 
-📅 **Timeline & Calendar Views**
-Explore your memory timeline with beautiful calendar and timeline views. See patterns in your thinking, track personal growth, and rediscover forgotten insights from months or years ago.
+📅 **Smart Flashcard Reviews**
+Your entries automatically become flashcards. Our spaced repetition system shows them to you at the perfect time - right before you forget. Rate how well you remember each one, and the system learns to optimize your review schedule.
 
-🔄 **Seamless Data Management**
-Full export/import functionality ensures your data is always under your control. Backup to JSON/CSV, migrate between devices, or integrate with other tools. Your journal entries stay private and secure on your device.
+🔄 **Superior Autobiographical Memory**
+Over time, you'll develop the ability to remember each day distinctly. Explore your memory timeline with timeline views. Give each day a unique identity you can look back on.
 
 🌟 **Daily Habit Building**
 Build consistent journaling habits with daily streaks and progress tracking. Watch as small, regular reflections compound into a comprehensive personal knowledge base over time.
 
-🎯 **Perfect For**
-• Students reviewing lecture notes and concepts
-• Professionals tracking project insights and decisions
-• Writers capturing creative ideas and inspiration
-• Anyone wanting to preserve meaningful life experiences
-• Researchers maintaining detailed observation logs
 
 **Why Pensieve?**
-While traditional note-taking apps focus on organization, Pensieve focuses on retention. Our scientifically-proven spaced repetition system ensures that important information stays accessible in your memory, not just in your digital storage.
+Unlike traditional note-taking apps that just organize information, Pensieve focuses on retention. Our spaced repetition system ensures that important information stays accessible in your memory, not just in your digital storage.
 
 **Privacy First**
-All your data stays on your device. No accounts, no cloud storage, no tracking. Your thoughts remain private and secure.
+All your data stays on your device. No accounts, no cloud storage, no tracking. Your thoughts remain completely private and secure.
 
 **Start your memory enhancement journey today!**
 ```
@@ -58,12 +52,12 @@ All your data stays on your device. No accounts, no cloud storage, no tracking. 
 ## 🎯 Feature Highlights (for Play Store features section)
 
 ### Core Features
-- **Smart Review Scheduling**: FSRS algorithm optimizes memory retention
-- **Daily Streaks**: Build consistent journaling habits
-- **News Integration**: Create entries inspired by current events
-- **Calendar View**: Explore your memory timeline
-- **Export/Import**: Backup and restore your journal data
-- **Local Storage**: Your data stays private on your device
+- **Smart Flashcard Reviews**: Entries become flashcards that appear right before you forget
+- **Daily Streaks**: Build consistent journaling habits with progress tracking
+- **News Integration**: Create entries inspired by current events and articles
+- **Memory Timeline**: Explore your entries with beautiful calendar and timeline views
+- **Export/Import**: Backup and restore your journal data anytime
+- **Local Storage**: Your data stays completely private on your device
 
 ### Technical Features
 - **Cross-Platform**: Works on Android devices
