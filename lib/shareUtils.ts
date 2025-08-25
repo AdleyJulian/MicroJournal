@@ -1,5 +1,10 @@
-import * as FileSystem from 'expo-file-system';
-import { Share } from 'react-native';
+/**
+ * Simplified sharing utilities using react-native-share
+ * Provides reliable text-only sharing across platforms
+ * No image complications - just pure, simple text sharing
+ */
+
+import Share from 'react-native-share';
 import { formatDateForDisplay } from './dateUtils';
 import { type JournalEntry, type MediaAttachment } from '@/db/schema/schema';
 
@@ -11,39 +16,51 @@ export const formatEntryMessage = (entry: JournalEntry): string => {
   const question = entry.promptQuestion || 'Journal Entry';
   const answer = entry.answer || 'No response recorded';
 
-  return `📝 Memory from ${dateStr}
+  return `Memory from ${dateStr}
 
-❓ ${question}
-💭 ${answer}
+${question}
 
-Shared from Pensieve Journal`;
+${answer}
+
+Shared from Pensieve`;
 };
 
 /**
- * Main sharing function using React Native's Share module
+ * Main sharing function using react-native Share (text only)
  */
-export const shareTextWithRN = async (message: string): Promise<void> => {
+export const shareTextOnly = async (message: string): Promise<void> => {
   try {
-    const result = await Share.share({
+    const result = await Share.open({
       message: message,
       title: 'Share Memory',
     });
 
-    if (result.action === Share.sharedAction) {
-      console.log('Memory shared successfully');
-    } else if (result.action === Share.dismissedAction) {
-      console.log('Share dismissed by user');
-    }
+    console.log('Memory shared successfully:', result);
   } catch (error) {
-    console.error('RN Share - Error:', error);
+    console.error('react-native Share Error:', error);
     throw error;
   }
+};
+
+// Removed unused base64 conversion functions - using simplified text-only sharing
+
+/**
+ * Simplified sharing function - only shares text (no image complications)
+ */
+export const shareWithImageAndText = async (
+  message: string,
+  imagePath?: string,
+  entryPrompt?: string
+): Promise<void> => {
+  // For now, just share text regardless of whether there's an image
+  console.log('Simplified sharing: sharing text only');
+  await shareTextOnly(message);
 };
 
 
 
 /**
- * Shares a journal entry with optional image attachment
+ * Shares a journal entry - simplified to text only
  */
 export const shareEntryWithImage = async (
   entry: JournalEntry,
@@ -51,49 +68,13 @@ export const shareEntryWithImage = async (
 ): Promise<void> => {
   const message = formatEntryMessage(entry);
 
-  try {
-    // Check if we have a valid image to share
-    if (media && media.mediaPath && media.mediaSourceType === 'file') {
-      // Additional safety check for file path
-      if (typeof media.mediaPath === 'string' && media.mediaPath.startsWith('file://')) {
-        // Verify the file exists
-        const fileInfo = await FileSystem.getInfoAsync(media.mediaPath);
+  // If there's media, add a note about it
+  const finalMessage = media?.mediaPath
+    ? `${message}\n\n📷 This memory includes a photo.`
+    : message;
 
-        if (fileInfo.exists) {
-          // For now, we'll share the text message even when there's an image
-          // since React Native Share doesn't support images directly
-          // TODO: Implement image sharing when needed
-          console.log('Image found but sharing text message for compatibility');
-        }
-      }
-    }
-
-    // Use React Native Share as the primary method
-    await shareTextWithRN(message);
-
-  } catch (error) {
-    console.error('Error sharing entry:', error);
-    throw new Error('Unable to share this memory. Please try again.');
-  }
+  console.log('Sharing entry with simplified text-only approach');
+  await shareTextOnly(finalMessage);
 };
 
-/**
- * Determines MIME type based on file extension
- */
-const getMimeTypeFromPath = (filePath: string): string => {
-  const extension = filePath.toLowerCase().split('.').pop();
-
-  switch (extension) {
-    case 'jpg':
-    case 'jpeg':
-      return 'image/jpeg';
-    case 'png':
-      return 'image/png';
-    case 'gif':
-      return 'image/gif';
-    case 'webp':
-      return 'image/webp';
-    default:
-      return 'image/jpeg'; // Default fallback
-  }
-};
+// Removed unused utility functions - using simplified text-only sharing

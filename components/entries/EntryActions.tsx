@@ -16,7 +16,7 @@ import { Link, router } from "expo-router";
 import { Text } from "@/components/ui";
 import { useMutation } from "@tanstack/react-query";
 import * as mutations from "@/db/mutations";
-import { shareEntryWithImage, shareTextWithRN } from "@/lib/shareUtils";
+import { shareEntryWithImage, shareTextOnly } from "@/lib/shareUtils";
 import { type JournalEntry, type MediaAttachment } from "@/db/schema/schema";
 
 import Toast from "react-native-toast-message";
