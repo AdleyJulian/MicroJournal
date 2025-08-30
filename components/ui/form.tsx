@@ -14,7 +14,7 @@ import {
   ControllerRenderProps,
   Path,
 } from "react-hook-form";
-import { TouchableOpacity, View, Image } from "react-native";
+import { TouchableOpacity, View, Image, Pressable } from "react-native";
 import Animated, { FadeInDown, FadeOut } from "react-native-reanimated";
 import {
   BottomSheet,
@@ -25,7 +25,7 @@ import {
 } from "../../components/ui/bottom-sheet";
 import { Calendar } from "../../components/ui/calendar";
 import { Combobox, ComboboxOption } from "~/components/ui/combobox";
-import { Button, buttonTextVariants } from "../../components/ui/button";
+import { Button, buttonTextVariants, buttonVariants } from "../../components/ui/button";
 import { Checkbox } from "../../components/ui/checkbox";
 import { Input } from "../../components/ui/input";
 import { Label } from "../../components/ui/label";
@@ -365,7 +365,7 @@ const FormCheckbox = React.forwardRef<
 FormCheckbox.displayName = "FormCheckbox";
 
 const FormDatePicker = React.forwardRef<
-  React.ElementRef<typeof Button>,
+  React.ElementRef<typeof Pressable>,
   FormItemProps<typeof Calendar, string>
 >(({ label, description, value, onChange, ...props }, ref) => {
   const {
@@ -379,57 +379,47 @@ const FormDatePicker = React.forwardRef<
     <FormItem>
       {!!label && <FormLabel nativeID={formItemNativeID}>{label}</FormLabel>}
       <BottomSheet>
-        <BottomSheetOpenTrigger asChild>
-          <Button
-            variant="outline"
-            className="flex-row gap-3 justify-start px-3 relative"
-            ref={ref}
-            aria-labelledby={formItemNativeID}
-            aria-describedby={
-              !error
-                ? `${formDescriptionNativeID}`
-                : `${formDescriptionNativeID} ${formMessageNativeID}`
-            }
-            aria-invalid={!!error}
-          >
-            {({ pressed }) => (
-              <>
-                <CalendarIcon
-                  className={buttonTextVariants({
-                    variant: "outline",
-                    className: cn(
-                      !value && "opacity-80",
-                      pressed && "opacity-60"
-                    ),
-                  })}
-                  size={18}
-                />
-                <Text
-                  className={buttonTextVariants({
-                    variant: "outline",
-                    className: cn(
-                      "font-normal",
-                      !value && "opacity-70",
-                      pressed && "opacity-50"
-                    ),
-                  })}
-                >
-                  {value ? value : "Pick a date"}
-                </Text>
-                {!!value && (
-                  <Button
-                    className="absolute right-0 active:opacity-70 native:pr-3"
-                    variant="ghost"
-                    onPress={() => {
-                      onChange?.("");
-                    }}
-                  >
-                    <X size={18} className="text-muted-foreground text-xs" />
-                  </Button>
-                )}
-              </>
+        <BottomSheetOpenTrigger
+          ref={ref}
+          className={cn(
+            buttonVariants({ variant: "outline", size: "default" }),
+            "flex-row gap-3 justify-start px-3 relative"
+          )}
+          aria-labelledby={formItemNativeID}
+          aria-describedby={
+            !error
+              ? `${formDescriptionNativeID}`
+              : `${formDescriptionNativeID} ${formMessageNativeID}`
+          }
+          aria-invalid={!!error}
+        >
+          <>
+            <CalendarIcon
+              className={buttonTextVariants({
+                variant: "outline",
+                className: cn(!value && "opacity-80"),
+              })}
+              size={18}
+            />
+            <Text
+              className={buttonTextVariants({
+                variant: "outline",
+                className: cn("font-normal", !value && "opacity-70"),
+              })}
+            >
+              {value ? value : "Pick a date"}
+            </Text>
+            {!!value && (
+              <Pressable
+                className="absolute right-0 active:opacity-70 native:pr-3"
+                onPress={() => {
+                  onChange?.("");
+                }}
+              >
+                <X size={18} className="text-muted-foreground text-xs" />
+              </Pressable>
             )}
-          </Button>
+          </>
         </BottomSheetOpenTrigger>
         <BottomSheetContent>
           <BottomSheetView hadHeader={false} className="pt-2">
@@ -447,10 +437,10 @@ const FormDatePicker = React.forwardRef<
               {...props}
             />
             <View className={"pb-2 pt-4"}>
-              <BottomSheetCloseTrigger asChild>
-                <Button>
-                  <Text>Close</Text>
-                </Button>
+              <BottomSheetCloseTrigger
+                className={buttonVariants({ variant: "default", size: "default" })}
+              >
+                <Text className={buttonTextVariants({ variant: "default", size: "default" })}>Close</Text>
               </BottomSheetCloseTrigger>
             </View>
           </BottomSheetView>
