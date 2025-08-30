@@ -13,7 +13,7 @@ import DraggableFlatList, {
 } from "react-native-draggable-flatlist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ChevronLeft, GripVertical, X, Edit2, Plus, Save } from "~/lib/icons";
-import { Button, Text } from "~/components/ui";
+import { Button, Text,   CustomHeader, } from "~/components/ui";
 import { useFocusEffect } from "expo-router";
 import { StyleSheet } from "react-native";
 
@@ -143,6 +143,7 @@ const ManageQuestionsScreen = () => {
       const isEditing = item.value === editingId;
 
       return (
+        
         <ScaleDecorator>
           <TouchableOpacity
             activeOpacity={1}
@@ -208,12 +209,14 @@ const ManageQuestionsScreen = () => {
 
   return (
     <View className="flex-1 bg-background">
-      {/* Header */}
+      <CustomHeader title="Manage Questions" showBackButton={true} />
+
+      {/* Add New Question Input */}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        className="border-t border-border bg-background"
+        className="bg-background"
       >
-        <View className="p-4">
+        <View className="p-4 border-b border-border">
           <View className="flex-row gap-2">
             <TextInput
               value={newQuestion}

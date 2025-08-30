@@ -84,7 +84,7 @@ export default function RootLayout() {
                   /> */}
                         <Stack.Screen
                           name="manage-questions"
-                          options={{ title: "Manage Questions" }}
+                          options={{ title: "Manage Questions", headerShown: false }}
                         />
                         <Stack.Screen
                           name="entries/index"

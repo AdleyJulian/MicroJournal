@@ -6,13 +6,13 @@
         "fb",
         "instagram",
         "twitter",
-        "tiktoksharesdk",
+        "tiktoksharesdk"
       ],
       "android": [
         "com.facebook.katana",
         "com.instagram.android",
         "com.twitter.android",
-        "com.zhiliaoapp.musically",
+        "com.zhiliaoapp.musically"
       ],
       "enableBase64ShareAndroid": true
     }
@@ -20,7 +20,7 @@
   "expo": {
     "name": "Pensieve",
     "slug": "pensieve",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icons/adaptive-icon.png",
     "scheme": "pensieve",
@@ -62,7 +62,8 @@
       ],
       "expo-sqlite",
       "expo-document-picker",
-      "expo-notifications"
+      "expo-notifications",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
