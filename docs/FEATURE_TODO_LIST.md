@@ -93,6 +93,21 @@ This document outlines the prioritized feature improvements for Pensieve before 
     - Memory strength filtering
     - Combined filters
 
+- **🆔 advanced_search** - Advanced search with operators and saved filters
+  - **Status**: 🔴 Pending
+  - **Priority**: Medium
+  - **Effort**: 6-8 hours
+  - **Description**: Full-featured search powered by SQLite FTS with boolean operators, phrase/prefix search, and saved searches.
+  - **Acceptance Criteria**:
+    - SQLite FTS5 (virtual table) for `answer`, `promptQuestion`, and optional article fields
+    - Boolean operators: AND, OR, NOT; phrase ("...") and prefix (term*) support
+    - Combine keyword search with tag filters and optional has-media toggle
+    - Sorting: newest/oldest; stable default
+    - Saved searches with quick access and persistence
+    - Highlight matched terms in results
+    - Debounced input (250–400ms) with previous-data kept during fetch
+    - Graceful empty state and error handling
+
 - **🆔 memory_vault_view** - Create memory vault view showing entries by difficulty/retention level
   - **Status**: 🔴 Pending
   - **Priority**: Medium

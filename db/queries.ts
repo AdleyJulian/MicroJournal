@@ -5,7 +5,7 @@ import {
   entryTags,
   mediaAttachments,
 } from "@/db/schema/schema";
-import { desc, eq, lte, count, and, gte, sql } from "drizzle-orm";
+import { desc, eq, lte, count, and, gte, sql, like, inArray, isNotNull, or } from "drizzle-orm";
 import { type JournalEntry, type MediaAttachment } from "@/db/schema/schema";
 import { formatDateToUTCString } from "@/lib/dateUtils";
 
@@ -29,6 +29,22 @@ export type AgendaItem = {
     entryDate: Date;
     media_attachments: MediaAttachment | null;
   }[];
+};
+
+export type EntrySearchParams = {
+  keyword?: string;
+  tagIds?: number[];
+  startDate?: Date;
+  endDate?: Date;
+  hasMedia?: boolean;
+  sort?: "newest" | "oldest";
+};
+
+export const getAllTags = async () => {
+  return await db
+    .select({ id: tags.id, name: tags.name })
+    .from(tags)
+    .orderBy(desc(tags.id));
 };
 
 export const getAllEntries = async () => {
@@ -100,6 +116,107 @@ export const getAllEntriesGroupedByDate = async () => {
     } else {
       return 0; // a and b are equal
     }
+  });
+
+  return agendaItems;
+};
+
+export const getEntriesBySearchGroupedByDate = async (
+  params: EntrySearchParams
+) => {
+  const { keyword, tagIds, startDate, endDate, hasMedia, sort } = params;
+
+  // Base query with optional joins
+  let base = db
+    .select()
+    .from(journalEntries)
+    .leftJoin(mediaAttachments, eq(journalEntries.id, mediaAttachments.entryId));
+
+  // Tags filter: include entries that have ANY of the provided tag ids
+  if (tagIds && tagIds.length > 0) {
+    base = base
+      .innerJoin(entryTags, eq(entryTags.entryId, journalEntries.id))
+      .innerJoin(tags, eq(tags.id, entryTags.tagId));
+  }
+
+  const conditions = [] as any[];
+
+  // Only user-created cards
+  conditions.push(eq(journalEntries.cardType, "user"));
+
+  if (keyword && keyword.trim().length > 0) {
+    const pattern = `%${keyword.trim()}%`;
+    conditions.push(
+      or(
+        like(journalEntries.answer, pattern),
+        like(journalEntries.promptQuestion, pattern)
+      )
+    );
+  }
+
+  if (tagIds && tagIds.length > 0) {
+    conditions.push(inArray(entryTags.tagId, tagIds));
+  }
+
+  if (startDate) {
+    conditions.push(gte(journalEntries.entryDate, startDate));
+  }
+
+  if (endDate) {
+    conditions.push(lte(journalEntries.entryDate, endDate));
+  }
+
+  if (hasMedia) {
+    conditions.push(isNotNull(mediaAttachments.id));
+  }
+
+  const rows = await base
+    .where(and(...conditions))
+    .orderBy(
+      sort === "oldest" ? journalEntries.entryDate : desc(journalEntries.entryDate)
+    );
+
+  const groupedEntries: { [key: string]: any[] } = {};
+  rows.forEach((entry) => {
+    const { journal_cards, media_attachments } = entry as any;
+    const { entryDate } = journal_cards;
+
+    const date = formatDateToUTCString(entryDate);
+    const newEntry = {
+      id: journal_cards.id,
+      due: journal_cards.due,
+      stability: journal_cards.stability,
+      difficulty: journal_cards.difficulty,
+      elapsedDays: journal_cards.elapsedDays,
+      scheduledDays: journal_cards.scheduledDays,
+      reps: journal_cards.reps,
+      lapses: journal_cards.lapses,
+      state: journal_cards.state,
+      promptQuestion: journal_cards.promptQuestion,
+      answer: journal_cards.answer,
+      articleJson: journal_cards.articleJson,
+      entryDate: journal_cards.entryDate,
+      createdAt: journal_cards.createdAt,
+      updatedAt: journal_cards.updatedAt,
+      media_attachments: media_attachments,
+    };
+    if (!groupedEntries[date]) {
+      groupedEntries[date] = [];
+    }
+    groupedEntries[date].push(newEntry);
+  });
+
+  const agendaItems: AgendaItem[] = Object.keys(groupedEntries).map((date) => ({
+    title: String(date),
+    data: groupedEntries[date],
+  }));
+
+  agendaItems.sort((a, b) => {
+    const dateA = a.title;
+    const dateB = b.title;
+    if (dateA < dateB) return -1;
+    if (dateA > dateB) return 1;
+    return 0;
   });
 
   return agendaItems;

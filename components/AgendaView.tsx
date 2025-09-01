@@ -86,7 +86,7 @@ export const CalendarWithAgenda = (props: ComponentProps) => {
   return (
     <CalendarProvider
       date={initialDate}
-      showTodayButton
+      
       todayButtonStyle={getTheme(isDarkColorScheme)}
     >
       <ExpandableCalendar
